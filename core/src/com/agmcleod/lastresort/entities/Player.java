@@ -15,8 +15,8 @@ public class Player extends GameEntity {
         TransformComponent transformComponent = new TransformComponent();
         transformComponent.position.x = Gdx.graphics.getWidth() / 2;
         transformComponent.position.y = Gdx.graphics.getHeight() / 2;
-        transformComponent.width = 64;
-        transformComponent.height = 64;
+        transformComponent.width = 100;
+        transformComponent.height = 100;
         this.add(transformComponent);
         this.add(new PhysicsComponent(world, this, BodyDef.BodyType.DynamicBody));
     }
