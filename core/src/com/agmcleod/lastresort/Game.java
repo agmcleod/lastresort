@@ -55,6 +55,7 @@ public class Game extends ApplicationAdapter {
         PlayerActor playerActor = new PlayerActor(atlas, player);
 
         stage.addActor(playerActor);
+        stage.setKeyboardFocus(playerActor);
     }
 
     @Override
