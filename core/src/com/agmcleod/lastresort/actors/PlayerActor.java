@@ -43,11 +43,8 @@ public class PlayerActor extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         Vector2 position = EntityToScreenBridge.transform(player);
-        // TODO: setting from body feels pointless, find a way to improve this
-        this.setPosition(position.x, position.y);
-        this.setRotation(MathUtils.radiansToDegrees * EntityToScreenBridge.getRotation(player));
-        sprite.setPosition(getX(), getY());
-        sprite.setRotation(getRotation());
+        sprite.setPosition(position.x, position.y);
+        sprite.setRotation(MathUtils.radiansToDegrees * EntityToScreenBridge.getRotation(player));
         player.setDirty(false);
         sprite.draw(batch);
     }

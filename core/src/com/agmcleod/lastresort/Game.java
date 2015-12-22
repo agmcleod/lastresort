@@ -1,6 +1,8 @@
 package com.agmcleod.lastresort;
 
+import com.agmcleod.lastresort.actors.PlanetActor;
 import com.agmcleod.lastresort.actors.PlayerActor;
+import com.agmcleod.lastresort.entities.Planet;
 import com.agmcleod.lastresort.entities.Player;
 import com.agmcleod.lastresort.systems.MovementSystem;
 import com.badlogic.ashley.core.Engine;
@@ -28,6 +30,7 @@ public class Game extends ApplicationAdapter {
     private Matrix4 cameraCpy;
     private Box2DDebugRenderer debugRenderer;
     private Engine engine;
+    private Player player;
     private Array<Texture> textures;
     private Stage stage;
     private World world;
@@ -46,12 +49,19 @@ public class Game extends ApplicationAdapter {
         debugRenderer = new Box2DDebugRenderer();
         textures = new Array<Texture>();
 
-        Player player = new Player(world);
+        player = new Player(world);
         engine.addEntity(player);
+
+        Planet planet = new Planet(200, 200, world);
+        engine.addEntity(planet);
 
         engine.addSystem(new MovementSystem());
 
         atlas = new TextureAtlas(Gdx.files.internal("sprites.txt"));
+
+        PlanetActor planetActor = new PlanetActor(atlas, planet);
+        stage.addActor(planetActor);
+
         PlayerActor playerActor = new PlayerActor(atlas, player);
 
         stage.addActor(playerActor);
@@ -77,6 +87,7 @@ public class Game extends ApplicationAdapter {
 
         float dt = Gdx.graphics.getDeltaTime();
         engine.update(dt);
+        stage.getCamera().position.set(player.getTransform().position.x, player.getTransform().position.y, 0);
 
         stage.act(dt);
         stage.draw();
