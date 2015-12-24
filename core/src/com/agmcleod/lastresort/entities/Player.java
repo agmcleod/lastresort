@@ -15,6 +15,7 @@ public class Player extends GameEntity {
     private boolean rotateCounterClockwise;
     private boolean rotateClockwise;
     private boolean thrustForward;
+    private boolean thrustBackward;
     public Player(World world) {
         TransformComponent transformComponent = new TransformComponent();
         transformComponent.position.x = Gdx.graphics.getWidth() / 2;
@@ -42,6 +43,10 @@ public class Player extends GameEntity {
         return rotateClockwise;
     }
 
+    public boolean isThrustingBackward() {
+        return thrustBackward;
+    }
+
     public boolean isThrustingForward() {
         return thrustForward;
     }
@@ -59,6 +64,10 @@ public class Player extends GameEntity {
                 break;
             case Input.Keys.SPACE:
                 thrustForward = state;
+                updated = true;
+                break;
+            case Input.Keys.CONTROL_LEFT:
+                thrustBackward = state;
                 updated = true;
                 break;
         }

@@ -96,9 +96,8 @@ public class Game extends ApplicationAdapter {
 
         Label coordinates = uiMap.get("coordinates");
         Vector2 playerPosition = player.getTransform().position;
-        String coordinatesText = "[" + MathUtils.floor(playerPosition.x - Gdx.graphics.getWidth() / 2) +
-                "," + MathUtils.floor(playerPosition.y - Gdx.graphics.getHeight() / 2) +
-                "]";
+        String coordinatesText = MathUtils.floor(playerPosition.x - Gdx.graphics.getWidth() / 2) +
+                "," + MathUtils.floor(playerPosition.y - Gdx.graphics.getHeight() / 2);
         coordinates.setText(coordinatesText);
 
         stage.getCamera().position.set(player.getTransform().position.x, player.getTransform().position.y, 0);
