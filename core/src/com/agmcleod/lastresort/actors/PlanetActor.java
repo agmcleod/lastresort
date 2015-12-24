@@ -16,8 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 public class PlanetActor extends Actor {
     private Planet planet;
     private Sprite sprite;
-    public PlanetActor(TextureAtlas textureAtlas, Planet planet) {
-        sprite = textureAtlas.createSprite("planet");
+    public PlanetActor(Sprite sprite, Planet planet) {
+        this.sprite = sprite;
         this.planet = planet;
         TransformComponent transformComponent = planet.getTransform();
         Vector2 position = EntityToScreenBridge.transform(planet);

@@ -14,9 +14,18 @@ public class PhysicsComponent implements Component {
     public PhysicsComponent(World world, Entity entity, BodyDef.BodyType bodyType) {
         TransformComponent transformComponent = ComponentMappers.transform.get(entity);
 
-        PolygonShape playerShape = new PolygonShape();
-        playerShape.setAsBox(transformComponent.width / 2 * Game.WORLD_TO_BOX, transformComponent.height / 2 * Game.WORLD_TO_BOX);
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(transformComponent.width / 2 * Game.WORLD_TO_BOX, transformComponent.height / 2 * Game.WORLD_TO_BOX);
 
+        setupBody(world, shape, bodyType, transformComponent);
+    }
+
+    public PhysicsComponent(World world, Entity entity, BodyDef.BodyType bodyType, Shape shape) {
+        TransformComponent transformComponent = ComponentMappers.transform.get(entity);
+        setupBody(world, shape, bodyType, transformComponent);
+    }
+
+    private void setupBody(World world, Shape shape, BodyDef.BodyType bodyType, TransformComponent transformComponent) {
         BodyDef def = new BodyDef();
 
         def.type = bodyType;
@@ -26,13 +35,13 @@ public class PhysicsComponent implements Component {
         body.setFixedRotation(true);
 
         FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = playerShape;
+        fixtureDef.shape = shape;
         fixtureDef.density = 0.5f;
         fixtureDef.friction = 0f;
         fixtureDef.restitution = 0f;
 
         body.createFixture(fixtureDef);
 
-        playerShape.dispose();
+        shape.dispose();
     }
 }

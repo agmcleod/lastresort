@@ -18,8 +18,8 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 public class PlayerActor extends Actor {
     private Player player;
     private Sprite sprite;
-    public PlayerActor(TextureAtlas atlas, final Player player) {
-        sprite = atlas.createSprite("ship");
+    public PlayerActor(Sprite sprite, final Player player) {
+        this.sprite = sprite;
         this.player = player;
 
         TransformComponent transformComponent = player.getTransform();

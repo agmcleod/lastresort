@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
@@ -60,18 +61,55 @@ public class Game extends ApplicationAdapter {
         textures = new Array<Texture>();
 
         uiFont = new BitmapFont(Gdx.files.internal("xolo24.fnt"), Gdx.files.internal("xolo24.png"), false);
-
-        player = new Player(world);
+        atlas = new TextureAtlas(Gdx.files.internal("sprites.txt"));
+        Sprite playerSprite = atlas.createSprite("ship");
+        player = new Player(playerSprite, world);
         engine.addEntity(player);
-
-        Planet planet = new Planet(200, 200, world);
-        engine.addEntity(planet);
 
         engine.addSystem(new MovementSystem());
 
-        uiMap = new ObjectMap<String, Label>();
-        uiStage = new Stage(new ScalingViewport(Scaling.stretch, width, height));
-        setupStage(planet);
+        PlayerActor playerActor = new PlayerActor(playerSprite, player);
+
+        stage.addActor(playerActor);
+        stage.setKeyboardFocus(playerActor);
+        buildPlanetMap();
+        setupUiStage();
+    }
+
+    public void buildPlanetMap() {
+        float startX = 300;
+        float startY = 300;
+        for (int i = 0; i < 10; i++) {
+            float xMod = 1;
+            float yMod = 1;
+
+            if (i > 1) {
+                xMod *= MathUtils.random(2f, 5f);
+                yMod *= MathUtils.random(2f, 5f);
+            }
+
+            if (MathUtils.random() > 0.5f) {
+                yMod *= -1;
+            }
+
+            String spriteName = "planet";
+
+            if (MathUtils.random() > 0.5f) {
+                spriteName = "planet2";
+            }
+
+            if (i >= 5) {
+                xMod *= -1;
+            }
+
+            System.out.println(xMod + "," + yMod);
+
+            Sprite sprite = atlas.createSprite(spriteName);
+            Planet planet = new Planet(startX + startX * xMod, startY + startY * yMod, sprite, world);
+            engine.addEntity(planet);
+            PlanetActor planetActor = new PlanetActor(sprite, planet);
+            stage.addActor(planetActor);
+        }
     }
 
     @Override
@@ -119,17 +157,9 @@ public class Game extends ApplicationAdapter {
         stage.getViewport().update(width, height, true);
     }
 
-    public void setupStage(Planet planet) {
-        atlas = new TextureAtlas(Gdx.files.internal("sprites.txt"));
-
-        PlanetActor planetActor = new PlanetActor(atlas, planet);
-        stage.addActor(planetActor);
-
-        PlayerActor playerActor = new PlayerActor(atlas, player);
-
-        stage.addActor(playerActor);
-        stage.setKeyboardFocus(playerActor);
-
+    public void setupUiStage() {
+        uiMap = new ObjectMap<String, Label>();
+        uiStage = new Stage(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         Skin skin = new Skin();
         skin.add("default", new Label.LabelStyle(uiFont, Color.WHITE));
         Table table = new Table();

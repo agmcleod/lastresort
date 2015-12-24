@@ -5,6 +5,7 @@ import com.agmcleod.lastresort.components.PhysicsComponent;
 import com.agmcleod.lastresort.components.TransformComponent;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.World;
 
@@ -16,12 +17,12 @@ public class Player extends GameEntity {
     private boolean rotateClockwise;
     private boolean thrustForward;
     private boolean thrustBackward;
-    public Player(World world) {
+    public Player(Sprite sprite, World world) {
         TransformComponent transformComponent = new TransformComponent();
         transformComponent.position.x = Gdx.graphics.getWidth() / 2;
         transformComponent.position.y = Gdx.graphics.getHeight() / 2;
-        transformComponent.width = 100;
-        transformComponent.height = 100;
+        transformComponent.width = sprite.getWidth();
+        transformComponent.height = sprite.getHeight();
         this.add(transformComponent);
         this.add(new PhysicsComponent(world, this, BodyDef.BodyType.DynamicBody));
     }
