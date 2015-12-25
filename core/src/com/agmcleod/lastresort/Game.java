@@ -72,44 +72,8 @@ public class Game extends ApplicationAdapter {
 
         stage.addActor(playerActor);
         stage.setKeyboardFocus(playerActor);
-        buildPlanetMap();
+        StarmapGenerator.buildMap(world, engine, stage, atlas);
         setupUiStage();
-    }
-
-    public void buildPlanetMap() {
-        float startX = 300;
-        float startY = 300;
-        for (int i = 0; i < 10; i++) {
-            float xMod = 1;
-            float yMod = 1;
-
-            if (i > 1) {
-                xMod *= MathUtils.random(2f, 5f);
-                yMod *= MathUtils.random(2f, 5f);
-            }
-
-            if (MathUtils.random() > 0.5f) {
-                yMod *= -1;
-            }
-
-            String spriteName = "planet";
-
-            if (MathUtils.random() > 0.5f) {
-                spriteName = "planet2";
-            }
-
-            if (i >= 5) {
-                xMod *= -1;
-            }
-
-            System.out.println(xMod + "," + yMod);
-
-            Sprite sprite = atlas.createSprite(spriteName);
-            Planet planet = new Planet(startX + startX * xMod, startY + startY * yMod, sprite, world);
-            engine.addEntity(planet);
-            PlanetActor planetActor = new PlanetActor(sprite, planet);
-            stage.addActor(planetActor);
-        }
     }
 
     @Override
