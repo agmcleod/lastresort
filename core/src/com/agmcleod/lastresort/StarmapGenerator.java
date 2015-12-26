@@ -17,38 +17,27 @@ public class StarmapGenerator {
     }
 
     public static void buildMap(World world, Engine engine, Stage stage, TextureAtlas atlas) {
-        float startX = 300;
-        float startY = 300;
-        for (int i = 0; i < 10; i++) {
-            float xMod = 1;
-            float yMod = 1;
+        int spaceSize = 1200;
+        for (int r = 0; r < 10; r++) {
+            for (int c = 0; c < 10; c++) {
+                String spriteName = "planet";
 
-            if (i > 1) {
-                xMod *= MathUtils.random(2f, 5f);
-                yMod *= MathUtils.random(2f, 5f);
+                if (MathUtils.random() > 0.5f) {
+                    spriteName = "planet2";
+                }
+
+                int x = c * spaceSize - spaceSize / 2;
+                int y = r * spaceSize - spaceSize / 2;
+
+                x += MathUtils.random(-250, 250);
+                y += MathUtils.random(-250, 250);
+
+                Sprite sprite = atlas.createSprite(spriteName);
+                Planet planet = new Planet(x, y, sprite, world);
+                engine.addEntity(planet);
+                PlanetActor planetActor = new PlanetActor(sprite, planet);
+                stage.addActor(planetActor);
             }
-
-            if (MathUtils.random() > 0.5f) {
-                yMod *= -1;
-            }
-
-            String spriteName = "planet";
-
-            if (MathUtils.random() > 0.5f) {
-                spriteName = "planet2";
-            }
-
-            if (i >= 5) {
-                xMod *= -1;
-            }
-
-            System.out.println(xMod + "," + yMod);
-
-            Sprite sprite = atlas.createSprite(spriteName);
-            Planet planet = new Planet(startX + startX * xMod, startY + startY * yMod, sprite, world);
-            engine.addEntity(planet);
-            PlanetActor planetActor = new PlanetActor(sprite, planet);
-            stage.addActor(planetActor);
         }
     }
 }
