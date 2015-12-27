@@ -1,6 +1,6 @@
 package com.agmcleod.lastresort;
 
-import com.agmcleod.lastresort.actors.PlanetActor;
+import com.agmcleod.lastresort.actors.StillObjectActor;
 import com.agmcleod.lastresort.entities.Planet;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -35,8 +35,8 @@ public class StarmapGenerator {
                 Sprite sprite = atlas.createSprite(spriteName);
                 Planet planet = new Planet(x, y, sprite, world);
                 engine.addEntity(planet);
-                PlanetActor planetActor = new PlanetActor(sprite, planet);
-                stage.addActor(planetActor);
+                StillObjectActor stillObjectActor = new StillObjectActor(sprite, planet);
+                stage.addActor(stillObjectActor);
             }
         }
     }

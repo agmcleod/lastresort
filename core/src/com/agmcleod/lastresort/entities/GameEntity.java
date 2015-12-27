@@ -9,6 +9,12 @@ import com.agmcleod.lastresort.components.ComponentMappers;
  */
 public abstract class GameEntity extends Entity {
     private boolean dirty = false;
+    protected String name;
+
+    public String getName() {
+        return name;
+    }
+
     public TransformComponent getTransform() {
         return ComponentMappers.transform.get(this);
     }

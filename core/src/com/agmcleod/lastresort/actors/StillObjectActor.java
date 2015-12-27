@@ -13,10 +13,10 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 /**
  * Created by Aaron on 12/21/2015.
  */
-public class PlanetActor extends Actor {
+public class StillObjectActor extends Actor {
     private Planet planet;
     private Sprite sprite;
-    public PlanetActor(Sprite sprite, Planet planet) {
+    public StillObjectActor(Sprite sprite, Planet planet) {
         this.sprite = sprite;
         this.planet = planet;
         TransformComponent transformComponent = planet.getTransform();

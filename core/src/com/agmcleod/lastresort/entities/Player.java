@@ -18,6 +18,7 @@ public class Player extends GameEntity {
     private boolean thrustForward;
     private boolean thrustBackward;
     public Player(Sprite sprite, World world) {
+        this.name = "Player";
         TransformComponent transformComponent = new TransformComponent();
         transformComponent.position.x = Gdx.graphics.getWidth() / 2;
         transformComponent.position.y = Gdx.graphics.getHeight() / 2;

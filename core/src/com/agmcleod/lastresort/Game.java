@@ -1,8 +1,6 @@
 package com.agmcleod.lastresort;
 
-import com.agmcleod.lastresort.actors.PlanetActor;
 import com.agmcleod.lastresort.actors.PlayerActor;
-import com.agmcleod.lastresort.entities.Planet;
 import com.agmcleod.lastresort.entities.Player;
 import com.agmcleod.lastresort.systems.MovementSystem;
 import com.badlogic.ashley.core.Engine;
