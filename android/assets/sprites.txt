@@ -2,23 +2,30 @@ sprites.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
+mine
+  rotate: false
+  xy: 496, 648
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
 planet
   rotate: false
-  xy: 1, 647
+  xy: 2, 648
   size: 492, 492
   orig: 500, 500
   offset: 1, 6
   index: -1
 planet2
   rotate: false
-  xy: 1, 1
+  xy: 2, 2
   size: 640, 644
   orig: 650, 650
   offset: 3, 3
   index: -1
 ship
   rotate: false
-  xy: 643, 1
+  xy: 496, 750
   size: 100, 94
   orig: 100, 100
   offset: 0, 3
