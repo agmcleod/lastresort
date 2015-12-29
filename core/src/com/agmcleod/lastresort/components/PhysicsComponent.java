@@ -1,6 +1,7 @@
 package com.agmcleod.lastresort.components;
 
 import com.agmcleod.lastresort.Game;
+import com.agmcleod.lastresort.entities.GameEntity;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.physics.box2d.*;
@@ -11,21 +12,21 @@ import com.badlogic.gdx.physics.box2d.*;
 public class PhysicsComponent implements Component {
     public Body body;
 
-    public PhysicsComponent(World world, Entity entity, BodyDef.BodyType bodyType) {
+    public PhysicsComponent(World world, GameEntity entity, BodyDef.BodyType bodyType) {
         TransformComponent transformComponent = ComponentMappers.transform.get(entity);
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(transformComponent.width / 2 * Game.WORLD_TO_BOX, transformComponent.height / 2 * Game.WORLD_TO_BOX);
 
-        setupBody(world, shape, bodyType, transformComponent);
+        setupBody(world, entity, shape, bodyType, transformComponent);
     }
 
-    public PhysicsComponent(World world, Entity entity, BodyDef.BodyType bodyType, Shape shape) {
+    public PhysicsComponent(World world, GameEntity entity, BodyDef.BodyType bodyType, Shape shape) {
         TransformComponent transformComponent = ComponentMappers.transform.get(entity);
-        setupBody(world, shape, bodyType, transformComponent);
+        setupBody(world, entity, shape, bodyType, transformComponent);
     }
 
-    private void setupBody(World world, Shape shape, BodyDef.BodyType bodyType, TransformComponent transformComponent) {
+    private void setupBody(World world, GameEntity entity, Shape shape, BodyDef.BodyType bodyType, TransformComponent transformComponent) {
         BodyDef def = new BodyDef();
 
         def.type = bodyType;
@@ -39,8 +40,8 @@ public class PhysicsComponent implements Component {
         fixtureDef.density = 0.5f;
         fixtureDef.friction = 0f;
         fixtureDef.restitution = 0f;
-
         body.createFixture(fixtureDef);
+        body.setUserData(entity);
 
         shape.dispose();
     }

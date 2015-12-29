@@ -1,5 +1,6 @@
 package com.agmcleod.lastresort.screens;
 
+import com.agmcleod.lastresort.CollisionListener;
 import com.agmcleod.lastresort.Game;
 import com.agmcleod.lastresort.StarmapGenerator;
 import com.agmcleod.lastresort.actors.PlayerActor;
@@ -38,6 +39,7 @@ public class PlayScreen implements Screen {
     private Matrix4 cameraCpy;
     private Box2DDebugRenderer debugRenderer;
     private Engine engine;
+    private Game game;
     private Player player;
     private Array<Texture> textures;
     private Stage stage;
@@ -45,6 +47,11 @@ public class PlayScreen implements Screen {
     private World world;
     private BitmapFont uiFont;
     private ObjectMap<String, Label> uiMap;
+
+    public PlayScreen(Game game) {
+        this.game = game;
+    }
+
     @Override
     public void show() {
         engine = new Engine();
@@ -56,6 +63,7 @@ public class PlayScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         world = new World(new Vector2(0, 0), true);
+        world.setContactListener(new CollisionListener());
         debugRenderer = new Box2DDebugRenderer();
         textures = new Array<Texture>();
 
@@ -102,6 +110,10 @@ public class PlayScreen implements Screen {
         debugRenderer.render(world, cameraCpy.scl(Game.BOX_TO_WORLD));
 
         world.step(1/60f, 6, 2);
+
+        if (player.isDead()) {
+            game.setScreen(this);
+        }
     }
 
     public void setupUiStage() {

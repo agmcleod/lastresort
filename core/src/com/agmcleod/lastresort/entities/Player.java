@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.World;
  * Created by Aaron on 12/20/2015.
  */
 public class Player extends GameEntity {
+    private boolean dead;
     private boolean rotateCounterClockwise;
     private boolean rotateClockwise;
     private boolean thrustForward;
@@ -26,10 +27,15 @@ public class Player extends GameEntity {
         transformComponent.height = sprite.getHeight();
         this.add(transformComponent);
         this.add(new PhysicsComponent(world, this, BodyDef.BodyType.DynamicBody));
+        dead = false;
     }
 
     public TransformComponent getTransform() {
         return ComponentMappers.transform.get(this);
+    }
+
+    public boolean isDead() {
+        return dead;
     }
 
     @Override
@@ -51,6 +57,15 @@ public class Player extends GameEntity {
 
     public boolean isThrustingForward() {
         return thrustForward;
+    }
+
+    @Override
+    public void collisionCallback(GameEntity gameEntity) {
+        if (gameEntity instanceof EnemyOrb) {
+            dead = true;
+        } else {
+            System.out.println("Hi!");
+        }
     }
 
     public boolean setInputKeyState(int keycode, boolean state) {

@@ -10,7 +10,7 @@ public class Game extends com.badlogic.gdx.Game {
 
     @Override
     public void create () {
-        playScreen = new PlayScreen();
+        playScreen = new PlayScreen(this);
         setScreen(playScreen);
     }
 

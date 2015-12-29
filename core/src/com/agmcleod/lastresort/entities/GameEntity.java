@@ -15,6 +15,8 @@ public abstract class GameEntity extends Entity {
         return name;
     }
 
+    public void collisionCallback(GameEntity entity) {}
+
     public TransformComponent getTransform() {
         return ComponentMappers.transform.get(this);
     }
