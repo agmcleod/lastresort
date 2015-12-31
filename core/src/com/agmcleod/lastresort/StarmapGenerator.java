@@ -80,16 +80,14 @@ public class StarmapGenerator {
             int y;
 
             do {
-                x = MathUtils.random(1, COL_COUNT-1);
-                y = MathUtils.random(1, ROW_COUNT-1);
+                x = MathUtils.random(0, COL_COUNT);
+                y = MathUtils.random(0, ROW_COUNT);
             } while (consumedCoords.containsKey(x) && consumedCoords.get(x).contains(y, false));
 
             addConsumedCoords(x, y);
 
-            x *= SPACE_SIZE - SPACE_SIZE / 2;
-            y *= SPACE_SIZE - SPACE_SIZE / 2;
-            x -= MAP_WIDTH / 2;
-            y -= MAP_HEIGHT / 2;
+            x = x * SPACE_SIZE + SPACE_SIZE / 2 - MAP_WIDTH / 2;
+            y = y * SPACE_SIZE + SPACE_SIZE / 2 - MAP_HEIGHT / 2;
 
             Sprite sprite = atlas.createSprite("orb");
             Material material = new Material(x, y, sprite, world);
