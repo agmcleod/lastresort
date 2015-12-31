@@ -1,5 +1,6 @@
 package com.agmcleod.lastresort.entities;
 
+import com.agmcleod.lastresort.StarmapGenerator;
 import com.agmcleod.lastresort.components.ComponentMappers;
 import com.agmcleod.lastresort.components.PhysicsComponent;
 import com.agmcleod.lastresort.components.TransformComponent;
@@ -21,8 +22,6 @@ public class Player extends GameEntity {
     public Player(Sprite sprite, World world) {
         this.name = "Player";
         TransformComponent transformComponent = new TransformComponent();
-        transformComponent.position.x = Gdx.graphics.getWidth() / 2;
-        transformComponent.position.y = Gdx.graphics.getHeight() / 2;
         transformComponent.width = sprite.getWidth();
         transformComponent.height = sprite.getHeight();
         this.add(transformComponent);
@@ -63,8 +62,6 @@ public class Player extends GameEntity {
     public void collisionCallback(GameEntity gameEntity) {
         if (gameEntity instanceof EnemyOrb) {
             dead = true;
-        } else {
-            System.out.println("Hi!");
         }
     }
 

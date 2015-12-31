@@ -15,11 +15,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -43,10 +43,11 @@ public class PlayScreen implements Screen {
     private Player player;
     private Array<Texture> textures;
     private Stage stage;
+    private StarmapGenerator starmapGenerator;
     private Stage uiStage;
-    private World world;
     private BitmapFont uiFont;
     private ObjectMap<String, Label> uiMap;
+    private World world;
 
     public PlayScreen(Game game) {
         this.game = game;
@@ -79,8 +80,11 @@ public class PlayScreen implements Screen {
 
         stage.addActor(playerActor);
         stage.setKeyboardFocus(playerActor);
-        StarmapGenerator.buildMap(world, engine, stage, atlas);
-        StarmapGenerator.placeMines(world, engine, stage, atlas);
+        starmapGenerator = new StarmapGenerator();
+        starmapGenerator.buildMap(world, engine, stage, atlas);
+        starmapGenerator.placeMines(world, engine, stage, atlas);
+        starmapGenerator.collectObjects(world, engine, stage, atlas);
+        starmapGenerator.buildBorders(engine, world);
         setupUiStage();
     }
 
@@ -94,8 +98,8 @@ public class PlayScreen implements Screen {
 
         Label coordinates = uiMap.get("coordinates");
         Vector2 playerPosition = player.getTransform().position;
-        String coordinatesText = MathUtils.floor(playerPosition.x - Gdx.graphics.getWidth() / 2) +
-                "," + MathUtils.floor(playerPosition.y - Gdx.graphics.getHeight() / 2);
+        String coordinatesText = MathUtils.floor(playerPosition.x) +
+                "," + MathUtils.floor(playerPosition.y);
         coordinates.setText(coordinatesText);
 
         stage.getCamera().position.set(player.getTransform().position.x, player.getTransform().position.y, 0);
