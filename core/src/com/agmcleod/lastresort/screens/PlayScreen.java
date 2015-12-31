@@ -4,6 +4,7 @@ import com.agmcleod.lastresort.CollisionListener;
 import com.agmcleod.lastresort.Game;
 import com.agmcleod.lastresort.StarmapGenerator;
 import com.agmcleod.lastresort.actors.PlayerActor;
+import com.agmcleod.lastresort.entities.FollowCamera;
 import com.agmcleod.lastresort.entities.Player;
 import com.agmcleod.lastresort.systems.MovementSystem;
 import com.badlogic.ashley.core.Engine;
@@ -18,6 +19,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -39,6 +41,7 @@ public class PlayScreen implements Screen {
     private Matrix4 cameraCpy;
     private Box2DDebugRenderer debugRenderer;
     private Engine engine;
+    private FollowCamera followCamera;
     private Game game;
     private Player player;
     private Array<Texture> textures;
@@ -86,6 +89,8 @@ public class PlayScreen implements Screen {
         starmapGenerator.collectObjects(world, engine, stage, atlas);
         starmapGenerator.buildBorders(engine, world);
         setupUiStage();
+        Rectangle viewBounds = new Rectangle(-StarmapGenerator.MAP_WIDTH / 2, -StarmapGenerator.MAP_HEIGHT / 2, StarmapGenerator.MAP_WIDTH, StarmapGenerator.MAP_HEIGHT);
+        followCamera = new FollowCamera(stage.getCamera(), player.getTransform(), viewBounds);
     }
 
     @Override
@@ -102,7 +107,7 @@ public class PlayScreen implements Screen {
                 "," + MathUtils.floor(playerPosition.y);
         coordinates.setText(coordinatesText);
 
-        stage.getCamera().position.set(player.getTransform().position.x, player.getTransform().position.y, 0);
+        followCamera.update();
 
         stage.act(dt);
         stage.draw();

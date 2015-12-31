@@ -3,7 +3,6 @@ package com.agmcleod.lastresort.components;
 import com.agmcleod.lastresort.Game;
 import com.agmcleod.lastresort.entities.GameEntity;
 import com.badlogic.ashley.core.Component;
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.physics.box2d.*;
 
 /**
