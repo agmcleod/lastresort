@@ -53,11 +53,8 @@ public class StarmapGenerator {
                         spriteName = "planet2";
                     }
 
-                    int x = c * SPACE_SIZE - SPACE_SIZE / 2;
-                    int y = r * SPACE_SIZE - SPACE_SIZE / 2;
-
-                    x -= MAP_WIDTH / 2;
-                    y -= MAP_HEIGHT / 2;
+                    int x = (c * SPACE_SIZE + SPACE_SIZE / 2) - MAP_WIDTH / 2;
+                    int y = (r * SPACE_SIZE + SPACE_SIZE / 2) - MAP_HEIGHT / 2;
 
                     addConsumedCoords(c, r);
 
@@ -80,14 +77,14 @@ public class StarmapGenerator {
             int y;
 
             do {
-                x = MathUtils.random(0, COL_COUNT);
-                y = MathUtils.random(0, ROW_COUNT);
+                x = MathUtils.random(0, COL_COUNT - 1);
+                y = MathUtils.random(0, ROW_COUNT - 1);
             } while (consumedCoords.containsKey(x) && consumedCoords.get(x).contains(y, false));
 
             addConsumedCoords(x, y);
 
-            x = x * SPACE_SIZE + SPACE_SIZE / 2 - MAP_WIDTH / 2;
-            y = y * SPACE_SIZE + SPACE_SIZE / 2 - MAP_HEIGHT / 2;
+            x = (x * SPACE_SIZE + SPACE_SIZE / 2) - MAP_WIDTH / 2;
+            y = (y * SPACE_SIZE + SPACE_SIZE / 2) - MAP_HEIGHT / 2;
 
             Sprite sprite = atlas.createSprite("orb");
             Material material = new Material(x, y, sprite, world);
@@ -97,8 +94,9 @@ public class StarmapGenerator {
     }
 
     public void placeMines(World world, Engine engine, Stage stage, TextureAtlas atlas) {
-        for (int r = 1; r < ROW_COUNT-1; r++) {
-            for (int c = 1; c < COL_COUNT-1; c++) {
+        for (int r = 1; r < ROW_COUNT; r++) {
+            for (int c = 1; c < COL_COUNT; c++) {
+                // dont place a mine in the start spot.
                 if (r == 5 && c == 5) {
                     continue;
                 }

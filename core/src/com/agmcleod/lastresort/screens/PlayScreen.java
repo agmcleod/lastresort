@@ -12,6 +12,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -91,7 +92,7 @@ public class PlayScreen implements Screen {
         setupUiStage();
         Rectangle viewBounds = new Rectangle(-StarmapGenerator.MAP_WIDTH / 2, -StarmapGenerator.MAP_HEIGHT / 2, StarmapGenerator.MAP_WIDTH, StarmapGenerator.MAP_HEIGHT);
         followCamera = new FollowCamera(stage.getCamera(), player.getTransform(), viewBounds);
-        stage.getCamera()
+        // ((OrthographicCamera) stage.getCamera()).zoom = 10f;
     }
 
     @Override
@@ -108,7 +109,7 @@ public class PlayScreen implements Screen {
                 "," + MathUtils.floor(playerPosition.y);
         coordinates.setText(coordinatesText);
 
-        //followCamera.update();
+        followCamera.update();
 
         stage.act(dt);
         stage.draw();
