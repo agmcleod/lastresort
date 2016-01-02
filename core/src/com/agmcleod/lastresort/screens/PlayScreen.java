@@ -3,8 +3,10 @@ package com.agmcleod.lastresort.screens;
 import com.agmcleod.lastresort.CollisionListener;
 import com.agmcleod.lastresort.Game;
 import com.agmcleod.lastresort.StarmapGenerator;
+import com.agmcleod.lastresort.actors.HarpoonActor;
 import com.agmcleod.lastresort.actors.PlayerActor;
 import com.agmcleod.lastresort.entities.FollowCamera;
+import com.agmcleod.lastresort.entities.Harpoon;
 import com.agmcleod.lastresort.entities.Player;
 import com.agmcleod.lastresort.systems.MovementSystem;
 import com.badlogic.ashley.core.Engine;
@@ -23,10 +25,12 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Scaling;
@@ -78,10 +82,16 @@ public class PlayScreen implements Screen {
         player = new Player(playerSprite, world);
         engine.addEntity(player);
 
+        Harpoon harpoon = new Harpoon(player);
+        engine.addEntity(harpoon);
+
         engine.addSystem(new MovementSystem());
 
         PlayerActor playerActor = new PlayerActor(playerSprite, player);
 
+        HarpoonActor harpoonActor = new HarpoonActor(atlas.createSprite("harpoon"), harpoon);
+
+        playerActor.addActor(harpoonActor);
         stage.addActor(playerActor);
         stage.setKeyboardFocus(playerActor);
         starmapGenerator = new StarmapGenerator();
@@ -135,10 +145,16 @@ public class PlayScreen implements Screen {
         Table table = new Table();
         table.setFillParent(true);
         Label coordinates = new Label("test", skin);
-        table.add(coordinates);
+        table.add(coordinates).expand().align(Align.topLeft);
         table.padLeft(10);
         table.padTop(10);
-        table.top().left();
+
+        Label controls = new Label("A / D - rotate\nSpace - Thrust\nCtrl - Reverse", skin);
+        controls.setAlignment(Align.right);
+        table.row();
+        table.add(controls).expand().align(Align.bottomRight);
+        table.padRight(10);
+        table.padTop(10);
 
         uiMap.put("coordinates", coordinates);
 

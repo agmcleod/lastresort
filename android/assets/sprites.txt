@@ -2,37 +2,44 @@ sprites.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
+harpoon
+  rotate: false
+  xy: 945, 1
+  size: 20, 50
+  orig: 20, 50
+  offset: 0, 0
+  index: -1
 mine
   rotate: false
-  xy: 648, 496
+  xy: 643, 1
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 orb
   rotate: false
-  xy: 750, 496
+  xy: 847, 1
   size: 96, 100
   orig: 100, 100
   offset: 3, 0
   index: -1
 planet
   rotate: false
-  xy: 648, 2
+  xy: 1, 647
   size: 492, 492
   orig: 500, 500
   offset: 1, 6
   index: -1
 planet2
-  rotate: true
-  xy: 2, 2
+  rotate: false
+  xy: 1, 1
   size: 640, 644
   orig: 650, 650
   offset: 3, 3
   index: -1
 ship
-  rotate: true
-  xy: 848, 496
+  rotate: false
+  xy: 745, 1
   size: 100, 94
   orig: 100, 100
   offset: 0, 3

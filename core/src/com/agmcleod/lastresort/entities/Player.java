@@ -1,10 +1,8 @@
 package com.agmcleod.lastresort.entities;
 
-import com.agmcleod.lastresort.StarmapGenerator;
 import com.agmcleod.lastresort.components.ComponentMappers;
 import com.agmcleod.lastresort.components.PhysicsComponent;
 import com.agmcleod.lastresort.components.TransformComponent;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.BodyDef;

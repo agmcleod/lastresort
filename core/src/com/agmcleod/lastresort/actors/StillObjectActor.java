@@ -18,10 +18,6 @@ public class StillObjectActor extends Actor {
     public StillObjectActor(Sprite sprite, GameEntity ge) {
         this.sprite = sprite;
         this.gameEntity = ge;
-        TransformComponent transformComponent = ge.getTransform();
-        Vector2 position = EntityToScreenBridge.transform(ge);
-
-        this.setBounds(position.x, position.y, transformComponent.width, transformComponent.height);
     }
 
     @Override

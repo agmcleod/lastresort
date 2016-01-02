@@ -9,13 +9,14 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
 /**
  * Created by Aaron on 12/20/2015.
  */
-public class PlayerActor extends Actor {
+public class PlayerActor extends Group {
     private Player player;
     private Sprite sprite;
     public PlayerActor(Sprite sprite, final Player player) {
@@ -45,7 +46,7 @@ public class PlayerActor extends Actor {
         Vector2 position = EntityToScreenBridge.transform(player);
         sprite.setPosition(position.x, position.y);
         sprite.setRotation(MathUtils.radiansToDegrees * EntityToScreenBridge.getRotation(player));
-        player.setDirty(false);
         sprite.draw(batch);
+        super.draw(batch, parentAlpha);
     }
 }
