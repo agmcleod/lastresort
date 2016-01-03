@@ -44,8 +44,11 @@ public class PlayerActor extends Group {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         Vector2 position = EntityToScreenBridge.transform(player);
+        this.setPosition(position.x, position.y);
+        float rotation = MathUtils.radiansToDegrees * EntityToScreenBridge.getRotation(player);
+        this.setRotation(rotation);
         sprite.setPosition(position.x, position.y);
-        sprite.setRotation(MathUtils.radiansToDegrees * EntityToScreenBridge.getRotation(player));
+        sprite.setRotation(rotation);
         sprite.draw(batch);
         super.draw(batch, parentAlpha);
     }

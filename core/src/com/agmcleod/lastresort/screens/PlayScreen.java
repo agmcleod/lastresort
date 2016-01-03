@@ -88,8 +88,8 @@ public class PlayScreen implements Screen {
         engine.addSystem(new MovementSystem());
 
         PlayerActor playerActor = new PlayerActor(playerSprite, player);
-
-        HarpoonActor harpoonActor = new HarpoonActor(atlas.createSprite("harpoon"), harpoon);
+        TextureAtlas.AtlasRegion harpoonRegion = atlas.findRegion("harpoon");
+        HarpoonActor harpoonActor = new HarpoonActor(harpoonRegion, harpoon);
 
         playerActor.addActor(harpoonActor);
         stage.addActor(playerActor);
