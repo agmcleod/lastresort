@@ -27,6 +27,7 @@ public class PlayerActor extends Group {
         Vector2 position = EntityToScreenBridge.transform(player);
         this.setBounds(position.x, position.y, transformComponent.width, transformComponent.height);
         sprite.setPosition(getX(), getY());
+        this.setOrigin(getWidth() / 2, getHeight() / 2);
 
         this.addListener(new InputListener() {
            @Override
