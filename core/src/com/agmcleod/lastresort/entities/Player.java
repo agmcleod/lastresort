@@ -1,6 +1,7 @@
 package com.agmcleod.lastresort.entities;
 
 import com.agmcleod.lastresort.components.ComponentMappers;
+import com.agmcleod.lastresort.components.HarpoonComponent;
 import com.agmcleod.lastresort.components.PhysicsComponent;
 import com.agmcleod.lastresort.components.TransformComponent;
 import com.badlogic.gdx.Input;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.World;
  */
 public class Player extends GameEntity {
     private boolean dead;
+    private Harpoon harpoon;
     private boolean rotateCounterClockwise;
     private boolean rotateClockwise;
     private boolean thrustForward;
@@ -24,7 +26,12 @@ public class Player extends GameEntity {
         transformComponent.height = sprite.getHeight();
         this.add(transformComponent);
         this.add(new PhysicsComponent(world, this, BodyDef.BodyType.DynamicBody));
+        this.add(new HarpoonComponent());
         dead = false;
+    }
+
+    public HarpoonComponent getHarpoonComponent() {
+        return ComponentMappers.harpoon.get(this);
     }
 
     public TransformComponent getTransform() {
@@ -61,6 +68,14 @@ public class Player extends GameEntity {
         if (gameEntity instanceof EnemyOrb) {
             dead = true;
         }
+    }
+
+    public Harpoon getHarpoon() {
+        return harpoon;
+    }
+
+    public void setHarpoon(Harpoon harpoon) {
+        this.harpoon = harpoon;
     }
 
     public boolean setInputKeyState(int keycode, boolean state) {

@@ -1,5 +1,6 @@
 package com.agmcleod.lastresort.entities;
 
+import com.agmcleod.lastresort.components.HarpoonRotateToTargetComponent;
 import com.agmcleod.lastresort.components.TransformComponent;
 
 /**
@@ -17,5 +18,14 @@ public class Harpoon extends GameEntity {
         transformComponent.height = 50;
 
         this.add(transformComponent);
+        this.add(new HarpoonRotateToTargetComponent());
+    }
+
+    public HarpoonRotateToTargetComponent getHarpoonRotateToTargetComponent() {
+        return this.getComponent(HarpoonRotateToTargetComponent.class);
+    }
+
+    public GameEntity getParent() {
+        return parent;
     }
 }

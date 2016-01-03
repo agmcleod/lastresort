@@ -5,9 +5,11 @@ import com.agmcleod.lastresort.Game;
 import com.agmcleod.lastresort.StarmapGenerator;
 import com.agmcleod.lastresort.actors.HarpoonActor;
 import com.agmcleod.lastresort.actors.PlayerActor;
+import com.agmcleod.lastresort.components.HarpoonComponent;
 import com.agmcleod.lastresort.entities.FollowCamera;
 import com.agmcleod.lastresort.entities.Harpoon;
 import com.agmcleod.lastresort.entities.Player;
+import com.agmcleod.lastresort.systems.HarpoonSystem;
 import com.agmcleod.lastresort.systems.MovementSystem;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
@@ -20,12 +22,11 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -76,16 +77,25 @@ public class PlayScreen implements Screen {
         debugRenderer = new Box2DDebugRenderer();
         textures = new Array<Texture>();
 
-        uiFont = new BitmapFont(Gdx.files.internal("xolo24.fnt"), Gdx.files.internal("xolo24.png"), false);
         atlas = new TextureAtlas(Gdx.files.internal("sprites.txt"));
+        createScene();
+        setupUiStage();
+        Rectangle viewBounds = new Rectangle(-StarmapGenerator.MAP_WIDTH / 2, -StarmapGenerator.MAP_HEIGHT / 2, StarmapGenerator.MAP_WIDTH, StarmapGenerator.MAP_HEIGHT);
+        followCamera = new FollowCamera(stage.getCamera(), player.getTransform(), viewBounds);
+        // ((OrthographicCamera) stage.getCamera()).zoom = 10f;
+    }
+
+    public void createScene() {
         Sprite playerSprite = atlas.createSprite("ship");
         player = new Player(playerSprite, world);
         engine.addEntity(player);
 
         Harpoon harpoon = new Harpoon(player);
         engine.addEntity(harpoon);
-
         engine.addSystem(new MovementSystem());
+        engine.addSystem(new HarpoonSystem());
+
+        player.setHarpoon(harpoon);
 
         PlayerActor playerActor = new PlayerActor(playerSprite, player);
         TextureAtlas.AtlasRegion harpoonRegion = atlas.findRegion("harpoon");
@@ -94,15 +104,23 @@ public class PlayScreen implements Screen {
         playerActor.addActor(harpoonActor);
         stage.addActor(playerActor);
         stage.setKeyboardFocus(playerActor);
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                HarpoonComponent harpoonComponent = player.getHarpoonComponent();
+                if (!harpoonComponent.fireTriggered && !harpoonComponent.firing) {
+                    harpoonComponent.fireTriggered = true;
+                    harpoonComponent.target.set(x, y);
+                    return true;
+                }
+                return false;
+            }
+        });
         starmapGenerator = new StarmapGenerator();
         starmapGenerator.buildMap(world, engine, stage, atlas);
         starmapGenerator.placeMines(world, engine, stage, atlas);
         starmapGenerator.collectObjects(world, engine, stage, atlas);
         starmapGenerator.buildBorders(engine, world);
-        setupUiStage();
-        Rectangle viewBounds = new Rectangle(-StarmapGenerator.MAP_WIDTH / 2, -StarmapGenerator.MAP_HEIGHT / 2, StarmapGenerator.MAP_WIDTH, StarmapGenerator.MAP_HEIGHT);
-        followCamera = new FollowCamera(stage.getCamera(), player.getTransform(), viewBounds);
-        // ((OrthographicCamera) stage.getCamera()).zoom = 10f;
     }
 
     @Override
@@ -138,6 +156,7 @@ public class PlayScreen implements Screen {
     }
 
     public void setupUiStage() {
+        uiFont = new BitmapFont(Gdx.files.internal("xolo24.fnt"), Gdx.files.internal("xolo24.png"), false);
         uiMap = new ObjectMap<String, Label>();
         uiStage = new Stage(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         Skin skin = new Skin();
@@ -159,7 +178,6 @@ public class PlayScreen implements Screen {
         uiMap.put("coordinates", coordinates);
 
         uiStage.addActor(table);
-
     }
 
     @Override
