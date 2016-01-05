@@ -14,8 +14,8 @@ public class Harpoon extends GameEntity {
         TransformComponent transformComponent = new TransformComponent();
         transformComponent.position.x = parent.getTransform().width / 2;
         transformComponent.position.y = parent.getTransform().height / 4;
-        transformComponent.width = 20;
-        transformComponent.height = 50;
+        transformComponent.width = 10;
+        transformComponent.height = 25;
 
         this.add(transformComponent);
         this.add(new HarpoonRotateToTargetComponent());

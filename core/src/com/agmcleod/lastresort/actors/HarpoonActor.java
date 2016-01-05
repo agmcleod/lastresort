@@ -49,6 +49,6 @@ public class HarpoonActor extends Actor {
             })
             ));
         }
-        batch.draw(textureRegion, getX(), getY(), getWidth() / 2, getHeight(), getWidth(), getHeight(), 1, 1, this.getRotation());
+        batch.draw(textureRegion, getX(), getY(), getWidth() / 2, getHeight() - 5, getWidth(), getHeight(), 1, 1, this.getRotation());
     }
 }

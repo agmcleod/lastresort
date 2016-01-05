@@ -5,8 +5,8 @@ repeat: none
 harpoon
   rotate: false
   xy: 945, 1
-  size: 20, 50
-  orig: 20, 50
+  size: 10, 25
+  orig: 10, 25
   offset: 0, 0
   index: -1
 mine
@@ -40,7 +40,7 @@ planet2
 ship
   rotate: false
   xy: 745, 1
-  size: 100, 94
+  size: 100, 86
   orig: 100, 100
-  offset: 0, 3
+  offset: 0, 12
   index: -1
