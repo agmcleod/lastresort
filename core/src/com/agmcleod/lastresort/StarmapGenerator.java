@@ -1,6 +1,7 @@
 package com.agmcleod.lastresort;
 
 import com.agmcleod.lastresort.actors.StillObjectActor;
+import com.agmcleod.lastresort.components.PhysicsComponent;
 import com.agmcleod.lastresort.entities.*;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -8,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -64,8 +67,7 @@ public class StarmapGenerator {
                     Sprite sprite = atlas.createSprite(spriteName);
                     Planet planet = new Planet(x, y, sprite, world);
                     engine.addEntity(planet);
-                    StillObjectActor stillObjectActor = new StillObjectActor(sprite, planet);
-                    stage.addActor(stillObjectActor);
+                    createStillActor(sprite, planet, stage);
                 }
             }
         }
@@ -89,7 +91,16 @@ public class StarmapGenerator {
             Sprite sprite = atlas.createSprite("orb");
             Material material = new Material(x, y, sprite, world);
             engine.addEntity(material);
-            createStillActor(sprite, material, stage);
+            final StillObjectActor actor = createStillActor(sprite, material, stage);
+            actor.addListener(new InputListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    GameEntity entity = actor.getGameEntity();
+                    PhysicsComponent physicsComponent = entity.getComponent(PhysicsComponent.class);
+                    Body body = physicsComponent.body;
+                    return true;
+                }
+            });
         }
     }
 
@@ -130,8 +141,10 @@ public class StarmapGenerator {
         rowValues.add(r);
     }
 
-    private void createStillActor(Sprite sprite, GameEntity entity, Stage stage) {
+    private StillObjectActor createStillActor(Sprite sprite, GameEntity entity, Stage stage) {
         StillObjectActor stillObjectActor = new StillObjectActor(sprite, entity);
         stage.addActor(stillObjectActor);
+
+        return stillObjectActor;
     }
 }

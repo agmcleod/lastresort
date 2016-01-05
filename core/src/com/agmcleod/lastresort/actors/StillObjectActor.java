@@ -28,4 +28,8 @@ public class StillObjectActor extends Actor {
         gameEntity.setDirty(false);
         sprite.draw(batch);
     }
+
+    public GameEntity getGameEntity() {
+        return gameEntity;
+    }
 }
