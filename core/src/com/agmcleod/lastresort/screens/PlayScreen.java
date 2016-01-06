@@ -101,7 +101,7 @@ public class PlayScreen implements Screen {
 
         PlayerActor playerActor = new PlayerActor(playerSprite, player);
         TextureAtlas.AtlasRegion harpoonRegion = atlas.findRegion("harpoon");
-        HarpoonActor harpoonActor = new HarpoonActor(harpoonRegion, harpoon);
+        HarpoonActor harpoonActor = new HarpoonActor(world, harpoonRegion, harpoon);
 
         playerActor.addActor(harpoonActor);
         stage.addActor(playerActor);
@@ -115,7 +115,7 @@ public class PlayScreen implements Screen {
         Iterator<StillObjectActor> stillActorIterator = collectObjects.iterator();
         while (stillActorIterator.hasNext()) {
             StillObjectActor actor = stillActorIterator.next();
-            actor.addListener(new HarpoonTargetListener(world, actor, player));
+            actor.addListener(new HarpoonTargetListener(actor, player));
         }
     }
 

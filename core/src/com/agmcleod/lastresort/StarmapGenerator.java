@@ -96,6 +96,12 @@ public class StarmapGenerator {
             actors.add(actor);
         }
 
+        Sprite sprite = atlas.createSprite("orb");
+        Material material = new Material(80, 80, sprite, world);
+        engine.addEntity(material);
+        final StillObjectActor actor = createStillActor(sprite, material, stage);
+        actors.add(actor);
+
         return actors;
     }
 

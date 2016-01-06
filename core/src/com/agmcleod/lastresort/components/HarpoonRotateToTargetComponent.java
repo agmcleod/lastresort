@@ -8,4 +8,5 @@ import com.badlogic.ashley.core.Component;
 public class HarpoonRotateToTargetComponent implements Component {
     public boolean startRotate = false;
     public float angle;
+    public boolean rotateImmediately;
 }

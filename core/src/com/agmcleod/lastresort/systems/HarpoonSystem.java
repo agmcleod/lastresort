@@ -10,6 +10,9 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Joint;
+import com.badlogic.gdx.utils.Logger;
 
 /**
  * Created by Aaron on 1/3/2016.
@@ -28,10 +31,8 @@ public class HarpoonSystem extends EntitySystem {
             if (entity instanceof Player) {
                 Player player = (Player) entity;
                 HarpoonComponent harpoonComponent = player.getHarpoonComponent();
-                if (harpoonComponent.fireTriggered) {
-                    harpoonComponent.fireTriggered = false;
-                    harpoonComponent.firing = true;
-
+                if (harpoonComponent.fireTriggered || harpoonComponent.joint != null) {
+                    HarpoonRotateToTargetComponent rotateToTarget = player.getHarpoon().getHarpoonRotateToTargetComponent();
                     Vector2 targetPos = harpoonComponent.target;
                     Vector2 playerPos = player.getTransform().position;
                     Vector2 harpoonPos = player.getHarpoon().getTransform().position;
@@ -45,10 +46,17 @@ public class HarpoonSystem extends EntitySystem {
                         angle -= 360;
                     }
 
-                    HarpoonRotateToTargetComponent rotateToTarget = player.getHarpoon().getHarpoonRotateToTargetComponent();
                     rotateToTarget.angle = angle;
-                    rotateToTarget.startRotate = true;
+
+                    if (harpoonComponent.fireTriggered) {
+                        harpoonComponent.fireTriggered = false;
+                        harpoonComponent.firing = true;
+                        rotateToTarget.startRotate = true;
+                    } else if (harpoonComponent.joint != null) {
+                        rotateToTarget.rotateImmediately = true;
+                    }
                 }
+
             }
         }
     }
