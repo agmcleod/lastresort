@@ -6,7 +6,9 @@ import com.agmcleod.lastresort.components.PhysicsComponent;
 import com.agmcleod.lastresort.components.TransformComponent;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.World;
 
 /**
@@ -28,6 +30,10 @@ public class Player extends GameEntity {
         this.add(new PhysicsComponent(world, this, BodyDef.BodyType.DynamicBody));
         this.add(new HarpoonComponent());
         dead = false;
+    }
+
+    public Body getBody() {
+        return ComponentMappers.physics.get(this).body;
     }
 
     public HarpoonComponent getHarpoonComponent() {
@@ -100,5 +106,9 @@ public class Player extends GameEntity {
         }
 
         return updated;
+    }
+
+    public void setJoint(Joint joint) {
+        getHarpoonComponent().joint = joint;
     }
 }

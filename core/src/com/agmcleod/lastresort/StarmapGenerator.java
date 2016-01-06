@@ -73,7 +73,8 @@ public class StarmapGenerator {
         }
     }
 
-    public void collectObjects(World world, Engine engine, Stage stage, TextureAtlas atlas) {
+    public Array<StillObjectActor> buildCollectObjects(World world, Engine engine, Stage stage, TextureAtlas atlas) {
+        Array<StillObjectActor> actors = new Array<StillObjectActor>();
         for (int i = 0; i < 5; i++) {
             int x;
             int y;
@@ -92,16 +93,10 @@ public class StarmapGenerator {
             Material material = new Material(x, y, sprite, world);
             engine.addEntity(material);
             final StillObjectActor actor = createStillActor(sprite, material, stage);
-            actor.addListener(new InputListener() {
-                @Override
-                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    GameEntity entity = actor.getGameEntity();
-                    PhysicsComponent physicsComponent = entity.getComponent(PhysicsComponent.class);
-                    Body body = physicsComponent.body;
-                    return true;
-                }
-            });
+            actors.add(actor);
         }
+
+        return actors;
     }
 
     public void placeMines(World world, Engine engine, Stage stage, TextureAtlas atlas) {

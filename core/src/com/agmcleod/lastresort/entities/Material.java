@@ -23,7 +23,7 @@ public class Material extends GameEntity {
         this.add(transformComponent);
         CircleShape shape = new CircleShape();
         shape.setRadius(transformComponent.width / 2 * Game.WORLD_TO_BOX);
-        PhysicsComponent physicsComponent = new PhysicsComponent(world, this, BodyDef.BodyType.StaticBody, shape);
+        PhysicsComponent physicsComponent = new PhysicsComponent(world, this, BodyDef.BodyType.DynamicBody, shape);
         this.add(physicsComponent);
     }
 }

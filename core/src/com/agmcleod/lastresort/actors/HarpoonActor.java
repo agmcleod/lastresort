@@ -39,7 +39,6 @@ public class HarpoonActor extends Actor {
             if (angle < 0) {
                 angle += 360f;
             }
-            System.out.println(angle + " " + harpoonRotateToTargetComponent.angle);
             addAction((sequence(Actions.rotateTo(angle, 0.5f), new RunnableAction() {
                 @Override
                 public void run() {

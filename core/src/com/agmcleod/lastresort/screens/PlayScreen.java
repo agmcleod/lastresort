@@ -4,7 +4,9 @@ import com.agmcleod.lastresort.CollisionListener;
 import com.agmcleod.lastresort.Game;
 import com.agmcleod.lastresort.StarmapGenerator;
 import com.agmcleod.lastresort.actors.HarpoonActor;
+import com.agmcleod.lastresort.actors.HarpoonTargetListener;
 import com.agmcleod.lastresort.actors.PlayerActor;
+import com.agmcleod.lastresort.actors.StillObjectActor;
 import com.agmcleod.lastresort.components.HarpoonComponent;
 import com.agmcleod.lastresort.entities.FollowCamera;
 import com.agmcleod.lastresort.entities.Harpoon;
@@ -104,23 +106,17 @@ public class PlayScreen implements Screen {
         playerActor.addActor(harpoonActor);
         stage.addActor(playerActor);
         stage.setKeyboardFocus(playerActor);
-        stage.addListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                HarpoonComponent harpoonComponent = player.getHarpoonComponent();
-                if (!harpoonComponent.fireTriggered && !harpoonComponent.firing) {
-                    harpoonComponent.fireTriggered = true;
-                    harpoonComponent.target.set(x, y);
-                    return true;
-                }
-                return false;
-            }
-        });
         starmapGenerator = new StarmapGenerator();
         starmapGenerator.buildMap(world, engine, stage, atlas);
         starmapGenerator.placeMines(world, engine, stage, atlas);
-        starmapGenerator.collectObjects(world, engine, stage, atlas);
+        Array<StillObjectActor> collectObjects = starmapGenerator.buildCollectObjects(world, engine, stage, atlas);
         starmapGenerator.buildBorders(engine, world);
+
+        Iterator<StillObjectActor> stillActorIterator = collectObjects.iterator();
+        while (stillActorIterator.hasNext()) {
+            StillObjectActor actor = stillActorIterator.next();
+            actor.addListener(new HarpoonTargetListener(world, actor, player));
+        }
     }
 
     @Override
