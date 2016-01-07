@@ -23,7 +23,6 @@ public class HarpoonTargetListener extends InputListener {
         if (!harpoonComponent.fireTriggered && !harpoonComponent.firing) {
             harpoonComponent.targetEntity = actor.getGameEntity();
             harpoonComponent.fireTriggered = true;
-            harpoonComponent.target.set(x, y);
         }
 
         return true;

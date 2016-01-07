@@ -44,20 +44,27 @@ public class HarpoonActor extends Actor {
             rotateHarpoonToTarget(harpoonRotateToTargetComponent);
         } else if (harpoonRotateToTargetComponent.rotateImmediately) {
             harpoonRotateToTargetComponent.rotateImmediately = false;
-            this.setRotation(harpoonRotateToTargetComponent.angle);
+            this.setRotation(getAbsoluteAngle(harpoonRotateToTargetComponent));
         }
 
         batch.draw(textureRegion, getX(), getY(), getWidth() / 2, getHeight() - 5, getWidth(), getHeight(), 1, 1, this.getRotation());
     }
 
-    private void rotateHarpoonToTarget(HarpoonRotateToTargetComponent harpoonRotateToTargetComponent) {
-        final Player player = (Player) harpoon.getParent();
-        harpoonRotateToTargetComponent.startRotate = false;
+    public float getAbsoluteAngle(HarpoonRotateToTargetComponent harpoonRotateToTargetComponent) {
+        Player player = (Player) harpoon.getParent();
         float angle = harpoonRotateToTargetComponent.angle - MathUtils.radiansToDegrees * EntityToScreenBridge.getRotation(player);
         if (angle < 0) {
             angle += 360f;
         }
-        addAction((sequence(Actions.rotateTo(angle, 0.5f), new RunnableAction() {
+
+        return angle;
+    }
+
+    private void rotateHarpoonToTarget(HarpoonRotateToTargetComponent harpoonRotateToTargetComponent) {
+        final Player player = (Player) harpoon.getParent();
+        harpoonRotateToTargetComponent.startRotate = false;
+
+        addAction((sequence(Actions.rotateTo(getAbsoluteAngle(harpoonRotateToTargetComponent), 0.5f), new RunnableAction() {
             @Override
             public void run() {
                 HarpoonComponent harpoonComponent = player.getHarpoonComponent();
@@ -69,7 +76,8 @@ public class HarpoonActor extends Actor {
                 jointDef.bodyB = player.getBody();
                 jointDef.type = JointDef.JointType.DistanceJoint;
                 jointDef.localAnchorB.set(0, -0.25f);
-                jointDef.length = harpoonComponent.target.dst(player.getTransform().position) * Game.WORLD_TO_BOX;
+                jointDef.length = harpoonComponent.targetEntity.getTransform().position
+                        .dst(player.getTransform().position) * Game.WORLD_TO_BOX;
 
                 player.setJoint(world.createJoint(jointDef));
             }

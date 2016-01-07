@@ -13,5 +13,4 @@ public class HarpoonComponent implements Component {
     public boolean fireTriggered = false;
     public GameEntity targetEntity;
     public Joint joint = null;
-    public Vector2 target = new Vector2();
 }

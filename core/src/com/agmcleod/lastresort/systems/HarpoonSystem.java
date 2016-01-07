@@ -33,7 +33,7 @@ public class HarpoonSystem extends EntitySystem {
                 HarpoonComponent harpoonComponent = player.getHarpoonComponent();
                 if (harpoonComponent.fireTriggered || harpoonComponent.joint != null) {
                     HarpoonRotateToTargetComponent rotateToTarget = player.getHarpoon().getHarpoonRotateToTargetComponent();
-                    Vector2 targetPos = harpoonComponent.target;
+                    Vector2 targetPos = harpoonComponent.targetEntity.getTransform().position;
                     Vector2 playerPos = player.getTransform().position;
                     Vector2 harpoonPos = player.getHarpoon().getTransform().position;
 
