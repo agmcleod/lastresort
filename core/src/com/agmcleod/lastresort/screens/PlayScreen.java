@@ -95,7 +95,7 @@ public class PlayScreen implements Screen {
         Harpoon harpoon = new Harpoon(player);
         engine.addEntity(harpoon);
         engine.addSystem(new MovementSystem());
-        engine.addSystem(new HarpoonSystem());
+        engine.addSystem(new HarpoonSystem(world));
 
         player.setHarpoon(harpoon);
 

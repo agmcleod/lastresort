@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Joint;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Logger;
 
 /**
@@ -19,10 +20,18 @@ import com.badlogic.gdx.utils.Logger;
  */
 public class HarpoonSystem extends EntitySystem {
     private ImmutableArray<Entity> entities;
-    public HarpoonSystem() {}
+    private World world;
+    public HarpoonSystem(World world) {
+        this.world = world;
+    }
 
     public void addedToEngine(Engine engine) {
         entities = engine.getEntitiesFor(Family.all(HarpoonComponent.class).get());
+    }
+
+    public void removeExistingHarpoon(HarpoonComponent harpoonComponent) {
+        world.destroyJoint(harpoonComponent.joint);
+        harpoonComponent.joint = null;
     }
 
     public void update(float dt) {
@@ -31,6 +40,11 @@ public class HarpoonSystem extends EntitySystem {
             if (entity instanceof Player) {
                 Player player = (Player) entity;
                 HarpoonComponent harpoonComponent = player.getHarpoonComponent();
+
+                if (harpoonComponent.fireTriggered && harpoonComponent.joint != null) {
+                    removeExistingHarpoon(harpoonComponent);
+                }
+
                 if (harpoonComponent.fireTriggered || harpoonComponent.joint != null) {
                     HarpoonRotateToTargetComponent rotateToTarget = player.getHarpoon().getHarpoonRotateToTargetComponent();
                     Vector2 targetPos = harpoonComponent.targetEntity.getTransform().position;
