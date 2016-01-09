@@ -3,16 +3,15 @@ package com.agmcleod.lastresort.screens;
 import com.agmcleod.lastresort.CollisionListener;
 import com.agmcleod.lastresort.Game;
 import com.agmcleod.lastresort.StarmapGenerator;
-import com.agmcleod.lastresort.actors.HarpoonActor;
-import com.agmcleod.lastresort.actors.HarpoonTargetListener;
-import com.agmcleod.lastresort.actors.PlayerActor;
-import com.agmcleod.lastresort.actors.StillObjectActor;
+import com.agmcleod.lastresort.actors.*;
 import com.agmcleod.lastresort.components.HarpoonComponent;
 import com.agmcleod.lastresort.entities.FollowCamera;
 import com.agmcleod.lastresort.entities.Harpoon;
 import com.agmcleod.lastresort.entities.Player;
+import com.agmcleod.lastresort.entities.Stars;
 import com.agmcleod.lastresort.systems.HarpoonSystem;
 import com.agmcleod.lastresort.systems.MovementSystem;
+import com.agmcleod.lastresort.systems.StarsParallaxSystem;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -67,13 +66,6 @@ public class PlayScreen implements Screen {
     @Override
     public void show() {
         engine = new Engine();
-        float width = Gdx.graphics.getWidth();
-        float height = Gdx.graphics.getHeight();
-        stage = new Stage(new ScalingViewport(Scaling.stretch, width, height));
-        cameraCpy = new Matrix4();
-
-        Gdx.input.setInputProcessor(stage);
-
         world = new World(new Vector2(0, 0), true);
         world.setContactListener(new CollisionListener());
         debugRenderer = new Box2DDebugRenderer();
@@ -88,6 +80,17 @@ public class PlayScreen implements Screen {
     }
 
     public void createScene() {
+        float width = Gdx.graphics.getWidth();
+        float height = Gdx.graphics.getHeight();
+        stage = new Stage(new ScalingViewport(Scaling.stretch, width, height));
+        cameraCpy = new Matrix4();
+
+        Gdx.input.setInputProcessor(stage);
+        TextureAtlas.AtlasRegion starsRegion = atlas.findRegion("stars");
+        Stars stars = new Stars(starsRegion);
+
+        // populate the engine with entities
+        engine.addEntity(stars);;
         Sprite playerSprite = atlas.createSprite("ship");
         player = new Player(playerSprite, world);
         engine.addEntity(player);
@@ -96,14 +99,17 @@ public class PlayScreen implements Screen {
         engine.addEntity(harpoon);
         engine.addSystem(new MovementSystem());
         engine.addSystem(new HarpoonSystem(world));
+        engine.addSystem(new StarsParallaxSystem(stage.getCamera()));
 
         player.setHarpoon(harpoon);
 
+        // populate the stage with actors
         PlayerActor playerActor = new PlayerActor(playerSprite, player);
         TextureAtlas.AtlasRegion harpoonRegion = atlas.findRegion("harpoon");
         HarpoonActor harpoonActor = new HarpoonActor(world, harpoonRegion, harpoon);
 
         playerActor.addActor(harpoonActor);
+        stage.addActor(new StarsActor(stars, starsRegion));
         stage.addActor(playerActor);
         stage.setKeyboardFocus(playerActor);
         starmapGenerator = new StarmapGenerator();

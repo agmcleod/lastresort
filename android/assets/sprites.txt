@@ -3,44 +3,51 @@ format: RGBA8888
 filter: Linear,Linear
 repeat: none
 harpoon
-  rotate: false
-  xy: 945, 1
+  rotate: true
+  xy: 954, 2
   size: 10, 25
   orig: 10, 25
   offset: 0, 0
   index: -1
 mine
   rotate: false
-  xy: 643, 1
+  xy: 648, 2
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 orb
-  rotate: false
-  xy: 847, 1
+  rotate: true
+  xy: 750, 2
   size: 96, 100
   orig: 100, 100
   offset: 3, 0
   index: -1
 planet
   rotate: false
-  xy: 1, 647
+  xy: 504, 644
   size: 492, 492
   orig: 500, 500
   offset: 1, 6
   index: -1
 planet2
-  rotate: false
-  xy: 1, 1
+  rotate: true
+  xy: 2, 2
   size: 640, 644
   orig: 650, 650
   offset: 3, 3
   index: -1
 ship
   rotate: false
-  xy: 745, 1
+  xy: 852, 2
   size: 100, 86
   orig: 100, 100
   offset: 0, 12
+  index: -1
+stars
+  rotate: false
+  xy: 2, 644
+  size: 500, 494
+  orig: 500, 500
+  offset: 0, 0
   index: -1
