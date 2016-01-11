@@ -5,10 +5,7 @@ import com.agmcleod.lastresort.Game;
 import com.agmcleod.lastresort.StarmapGenerator;
 import com.agmcleod.lastresort.actors.*;
 import com.agmcleod.lastresort.components.HarpoonComponent;
-import com.agmcleod.lastresort.entities.FollowCamera;
-import com.agmcleod.lastresort.entities.Harpoon;
-import com.agmcleod.lastresort.entities.Player;
-import com.agmcleod.lastresort.entities.Stars;
+import com.agmcleod.lastresort.entities.*;
 import com.agmcleod.lastresort.systems.HarpoonSystem;
 import com.agmcleod.lastresort.systems.MovementSystem;
 import com.agmcleod.lastresort.systems.StarsParallaxSystem;
@@ -22,6 +19,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.*;
@@ -86,11 +84,16 @@ public class PlayScreen implements Screen {
         cameraCpy = new Matrix4();
 
         Gdx.input.setInputProcessor(stage);
-        TextureAtlas.AtlasRegion starsRegion = atlas.findRegion("stars");
-        Stars stars = new Stars(starsRegion);
 
         // populate the engine with entities
-        engine.addEntity(stars);;
+        TextureAtlas.AtlasRegion starsRegion = atlas.findRegion("stars");
+        Stars stars = new Stars(starsRegion);
+        engine.addEntity(stars);
+
+        TextureAtlas.AtlasRegion stationRegion = atlas.findRegion("station");
+        Station station = new Station(stationRegion);
+        engine.addEntity(station);
+
         Sprite playerSprite = atlas.createSprite("ship");
         player = new Player(playerSprite, world);
         engine.addEntity(player);
@@ -110,6 +113,7 @@ public class PlayScreen implements Screen {
 
         playerActor.addActor(harpoonActor);
         stage.addActor(new StarsActor(stars, starsRegion));
+        stage.addActor(new StationActor(station, stationRegion));
         stage.addActor(playerActor);
         stage.setKeyboardFocus(playerActor);
         starmapGenerator = new StarmapGenerator();

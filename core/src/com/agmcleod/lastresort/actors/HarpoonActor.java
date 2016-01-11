@@ -46,7 +46,6 @@ public class HarpoonActor extends Actor {
             harpoonRotateToTargetComponent.rotateImmediately = false;
             this.setRotation(getAbsoluteAngle(harpoonRotateToTargetComponent));
         }
-
         batch.draw(textureRegion, getX(), getY(), getWidth() / 2, getHeight() - 5, getWidth(), getHeight(), 1, 1, this.getRotation());
     }
 

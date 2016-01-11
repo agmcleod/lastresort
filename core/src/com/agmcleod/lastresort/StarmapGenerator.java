@@ -28,6 +28,9 @@ public class StarmapGenerator {
 
     public StarmapGenerator() {
         consumedCoords = new ObjectMap<Integer, Array<Integer>>();
+        consumedCoords.put(5, new Array<Integer>() {{
+            add(5);
+        }});
     }
 
     public void buildBorders(Engine engine, World world) {
@@ -96,12 +99,6 @@ public class StarmapGenerator {
             actors.add(actor);
         }
 
-        Sprite sprite = atlas.createSprite("orb");
-        Material material = new Material(80, 80, sprite, world);
-        engine.addEntity(material);
-        final StillObjectActor actor = createStillActor(sprite, material, stage);
-        actors.add(actor);
-
         return actors;
     }
 
@@ -109,7 +106,8 @@ public class StarmapGenerator {
         for (int r = 1; r < ROW_COUNT; r++) {
             for (int c = 1; c < COL_COUNT; c++) {
                 // dont place a mine in the start spot.
-                if (r == 5 && c == 5) {
+                // or weight 80%
+                if ((r == 5 && c == 5) || Math.random() > 0.2f) {
                     continue;
                 }
                 Sprite sprite = atlas.createSprite("mine");
