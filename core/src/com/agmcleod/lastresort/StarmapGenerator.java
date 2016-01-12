@@ -1,5 +1,6 @@
 package com.agmcleod.lastresort;
 
+import com.agmcleod.lastresort.actors.MaterialActor;
 import com.agmcleod.lastresort.actors.StillObjectActor;
 import com.agmcleod.lastresort.components.PhysicsComponent;
 import com.agmcleod.lastresort.entities.*;
@@ -92,10 +93,20 @@ public class StarmapGenerator {
             x = (x * SPACE_SIZE + SPACE_SIZE / 2) - MAP_WIDTH / 2;
             y = (y * SPACE_SIZE + SPACE_SIZE / 2) - MAP_HEIGHT / 2;
 
+            RecipeType recipeType = null;
+
+            int num = 0; // will be random range
+            switch (num) {
+                case 0:
+                    recipeType = RecipeType.ORB;
+                    break;
+            }
+
             Sprite sprite = atlas.createSprite("orb");
-            Material material = new Material(x, y, sprite, world);
+            Material material = new Material(x, y, recipeType, sprite, world);
             engine.addEntity(material);
-            final StillObjectActor actor = createStillActor(sprite, material, stage);
+            MaterialActor actor = new MaterialActor(material, sprite, material);
+            stage.addActor(actor);
             actors.add(actor);
         }
 

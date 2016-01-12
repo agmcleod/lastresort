@@ -1,5 +1,6 @@
 package com.agmcleod.lastresort.entities;
 
+import com.agmcleod.lastresort.Game;
 import com.agmcleod.lastresort.components.ComponentMappers;
 import com.agmcleod.lastresort.components.HarpoonComponent;
 import com.agmcleod.lastresort.components.PhysicsComponent;
@@ -27,7 +28,7 @@ public class Player extends GameEntity {
         transformComponent.width = sprite.getWidth();
         transformComponent.height = sprite.getHeight();
         this.add(transformComponent);
-        this.add(new PhysicsComponent(world, this, BodyDef.BodyType.DynamicBody));
+        this.add(new PhysicsComponent(world, this, BodyDef.BodyType.DynamicBody, Game.PLAYER_MASK, Game.OBJECT_MASK));
         this.add(new HarpoonComponent());
         dead = false;
     }

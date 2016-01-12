@@ -1,31 +1,24 @@
 package com.agmcleod.lastresort.screens;
 
-import com.agmcleod.lastresort.CollisionListener;
-import com.agmcleod.lastresort.Game;
-import com.agmcleod.lastresort.StarmapGenerator;
+import com.agmcleod.lastresort.*;
 import com.agmcleod.lastresort.actors.*;
-import com.agmcleod.lastresort.components.HarpoonComponent;
 import com.agmcleod.lastresort.entities.*;
 import com.agmcleod.lastresort.systems.HarpoonSystem;
 import com.agmcleod.lastresort.systems.MovementSystem;
+import com.agmcleod.lastresort.systems.RecipeCollectionSystem;
 import com.agmcleod.lastresort.systems.StarsParallaxSystem;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -50,6 +43,8 @@ public class PlayScreen implements Screen {
     private Game game;
     private Player player;
     private Array<Texture> textures;
+    private RecipeManager recipeManager;
+    private ShapeRenderer shapeRenderer;
     private Stage stage;
     private StarmapGenerator starmapGenerator;
     private Stage uiStage;
@@ -68,8 +63,10 @@ public class PlayScreen implements Screen {
         world.setContactListener(new CollisionListener());
         debugRenderer = new Box2DDebugRenderer();
         textures = new Array<Texture>();
+        shapeRenderer = new ShapeRenderer();
 
         atlas = new TextureAtlas(Gdx.files.internal("sprites.txt"));
+        recipeManager = new RecipeManager();
         createScene();
         setupUiStage();
         Rectangle viewBounds = new Rectangle(-StarmapGenerator.MAP_WIDTH / 2, -StarmapGenerator.MAP_HEIGHT / 2, StarmapGenerator.MAP_WIDTH, StarmapGenerator.MAP_HEIGHT);
@@ -91,7 +88,7 @@ public class PlayScreen implements Screen {
         engine.addEntity(stars);
 
         TextureAtlas.AtlasRegion stationRegion = atlas.findRegion("station");
-        Station station = new Station(stationRegion);
+        Station station = new Station(stationRegion, world, recipeManager);
         engine.addEntity(station);
 
         Sprite playerSprite = atlas.createSprite("ship");
@@ -103,6 +100,7 @@ public class PlayScreen implements Screen {
         engine.addSystem(new MovementSystem());
         engine.addSystem(new HarpoonSystem(world));
         engine.addSystem(new StarsParallaxSystem(stage.getCamera()));
+        engine.addSystem(new RecipeCollectionSystem(engine, player, recipeManager));
 
         player.setHarpoon(harpoon);
 
@@ -170,14 +168,34 @@ public class PlayScreen implements Screen {
         Table table = new Table();
         table.setFillParent(true);
         Label coordinates = new Label("test", skin);
-        table.add(coordinates).expand().align(Align.topLeft);
+        table.add(coordinates).expandX().align(Align.topLeft);
+        RecipeGroup recipeGroup = new RecipeGroup(shapeRenderer);
+
+        Iterator<RecipeType> it = recipeManager.getRecipes().iterator();
+        int index = 0;
+        while (it.hasNext()) {
+            RecipeType type = it.next();
+            switch (type) {
+                case ORB:
+                    TextureAtlas.AtlasRegion region = atlas.findRegion("orb");
+                    recipeGroup.addActor(new RecipeItemActor(index * (region.getRegionWidth() / 2 + 20), 0, region));
+                    break;
+                default:
+                    break;
+            }
+
+            index++;
+        }
+
+
+        table.add(recipeGroup).width(recipeGroup.getWidth());
         table.padLeft(10);
         table.padTop(10);
 
         Label controls = new Label("A / D - rotate\nSpace - Thrust\nCtrl - Reverse", skin);
         controls.setAlignment(Align.right);
         table.row();
-        table.add(controls).expand().align(Align.bottomRight);
+        table.add(controls).colspan(2).expand().align(Align.bottomRight);
         table.padRight(10);
         table.padTop(10);
 
@@ -210,6 +228,7 @@ public class PlayScreen implements Screen {
     public void dispose() {
         stage.dispose();
         debugRenderer.dispose();
+        shapeRenderer.dispose();
         Iterator<Texture> it = textures.iterator();
         while (it.hasNext()) {
             Texture t = it.next();
