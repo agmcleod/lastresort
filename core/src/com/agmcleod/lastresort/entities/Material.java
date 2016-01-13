@@ -7,6 +7,7 @@ import com.agmcleod.lastresort.components.ComponentMappers;
 import com.agmcleod.lastresort.components.PhysicsComponent;
 import com.agmcleod.lastresort.components.TransformComponent;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -28,9 +29,15 @@ public class Material extends GameEntity {
         this.add(transformComponent);
         CircleShape shape = new CircleShape();
         shape.setRadius(transformComponent.width / 2 * Game.WORLD_TO_BOX);
-        PhysicsComponent physicsComponent = new PhysicsComponent(world, this, BodyDef.BodyType.DynamicBody, shape, Game.OBJECT_MASK, Game.STATION_MASK, 0.1f);
+        PhysicsComponent physicsComponent = new PhysicsComponent(
+                world, this, BodyDef.BodyType.DynamicBody, shape, Game.OBJECT_MASK, Game.STATION_MASK | Game.OBJECT_MASK | Game.PLAYER_MASK, 0.1f
+        );
         this.add(physicsComponent);
         this.add(new CollectableComponent());
+    }
+
+    public Body getBody() {
+        return ComponentMappers.physics.get(this).body;
     }
 
     public CollectableComponent getCollectableComponent() {

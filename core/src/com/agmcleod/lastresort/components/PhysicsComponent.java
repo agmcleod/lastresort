@@ -54,8 +54,8 @@ public class PhysicsComponent implements Component {
         fixtureDef.restitution = 0f;
         fixtureDef.filter.categoryBits = (short) categoryBits;
         fixtureDef.filter.maskBits = (short) maskBits;
+        fixtureDef.restitution = 0;
         fixtureDef.density = weight;
-        System.out.println(fixtureDef.density);
         body.createFixture(fixtureDef);
         body.setUserData(entity);
 

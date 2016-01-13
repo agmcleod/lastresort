@@ -36,6 +36,7 @@ import java.util.Iterator;
  */
 public class PlayScreen implements Screen {
     private TextureAtlas atlas;
+    private Array<Body> bodyCleanup;
     private Matrix4 cameraCpy;
     private Box2DDebugRenderer debugRenderer;
     private Engine engine;
@@ -66,7 +67,7 @@ public class PlayScreen implements Screen {
         shapeRenderer = new ShapeRenderer();
 
         atlas = new TextureAtlas(Gdx.files.internal("sprites.txt"));
-        recipeManager = new RecipeManager();
+        bodyCleanup = new Array<Body>();
         createScene();
         setupUiStage();
         Rectangle viewBounds = new Rectangle(-StarmapGenerator.MAP_WIDTH / 2, -StarmapGenerator.MAP_HEIGHT / 2, StarmapGenerator.MAP_WIDTH, StarmapGenerator.MAP_HEIGHT);
@@ -75,6 +76,7 @@ public class PlayScreen implements Screen {
     }
 
     public void createScene() {
+        recipeManager = new RecipeManager();
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
         stage = new Stage(new ScalingViewport(Scaling.stretch, width, height));
@@ -100,7 +102,7 @@ public class PlayScreen implements Screen {
         engine.addSystem(new MovementSystem());
         engine.addSystem(new HarpoonSystem(world));
         engine.addSystem(new StarsParallaxSystem(stage.getCamera()));
-        engine.addSystem(new RecipeCollectionSystem(engine, player, recipeManager));
+        engine.addSystem(new RecipeCollectionSystem(engine, player, recipeManager, world, bodyCleanup));
 
         player.setHarpoon(harpoon);
 
@@ -154,6 +156,12 @@ public class PlayScreen implements Screen {
 
         world.step(1/60f, 6, 2);
 
+        for (int i = bodyCleanup.size - 1; i >= 0; i--) {
+            Body body = bodyCleanup.get(i);
+            world.destroyBody(body);
+            bodyCleanup.removeIndex(i);
+        }
+
         if (player.isDead()) {
             game.setScreen(this);
         }
@@ -170,6 +178,7 @@ public class PlayScreen implements Screen {
         Label coordinates = new Label("test", skin);
         table.add(coordinates).expandX().align(Align.topLeft);
         RecipeGroup recipeGroup = new RecipeGroup(shapeRenderer);
+        recipeManager.setRecipeGroup(recipeGroup);
 
         Iterator<RecipeType> it = recipeManager.getRecipes().iterator();
         int index = 0;
@@ -178,7 +187,8 @@ public class PlayScreen implements Screen {
             switch (type) {
                 case ORB:
                     TextureAtlas.AtlasRegion region = atlas.findRegion("orb");
-                    recipeGroup.addActor(new RecipeItemActor(index * (region.getRegionWidth() / 2 + 20), 0, region));
+                    RecipeItemActor ria = new RecipeItemActor(index * (region.getRegionWidth() / 2 + 20), 0, region, type);
+                    recipeGroup.addActor(ria);
                     break;
                 default:
                     break;

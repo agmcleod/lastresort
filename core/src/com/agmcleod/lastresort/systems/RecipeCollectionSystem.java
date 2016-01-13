@@ -9,20 +9,28 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Joint;
+import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by aaronmcleod on 2016-01-11.
  */
 public class RecipeCollectionSystem extends EntitySystem {
+    private Array<Body> bodyCleanup;
     private Engine engine;
     private ImmutableArray<Entity> entities;
     private Player player;
     private RecipeManager recipeManager;
+    private World world;
 
-    public RecipeCollectionSystem(Engine engine, Player player, RecipeManager recipeManager) {
+    public RecipeCollectionSystem(Engine engine, Player player, RecipeManager recipeManager, World world, Array<Body> bodyCleanup) {
         this.player = player;
         this.engine = engine;
         this.recipeManager = recipeManager;
+        this.world = world;
+        this.bodyCleanup = bodyCleanup;
     }
 
     @Override
@@ -36,6 +44,9 @@ public class RecipeCollectionSystem extends EntitySystem {
             Material material = (Material) entities.get(i);
             if (material.getCollectableComponent().isCollected) {
                 engine.removeEntity(material);
+                bodyCleanup.add(material.getBody());
+                bodyCleanup.add(player.getHarpoonComponent().ropeBody);
+                player.getHarpoonComponent().cleanup();
                 recipeManager.consumeItem();
                 if (recipeManager.recipeFinished()) {
 

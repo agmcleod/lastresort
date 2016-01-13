@@ -30,8 +30,8 @@ public class HarpoonSystem extends EntitySystem {
     }
 
     public void removeExistingHarpoon(HarpoonComponent harpoonComponent) {
-        world.destroyJoint(harpoonComponent.joint);
-        harpoonComponent.joint = null;
+        world.destroyBody(harpoonComponent.ropeBody);
+        harpoonComponent.cleanup();
     }
 
     public void update(float dt) {
@@ -41,11 +41,11 @@ public class HarpoonSystem extends EntitySystem {
                 Player player = (Player) entity;
                 HarpoonComponent harpoonComponent = player.getHarpoonComponent();
 
-                if (harpoonComponent.fireTriggered && harpoonComponent.joint != null) {
+                if (harpoonComponent.fireTriggered && harpoonComponent.ropeBody != null) {
                     removeExistingHarpoon(harpoonComponent);
                 }
 
-                if (harpoonComponent.fireTriggered || harpoonComponent.joint != null) {
+                if (harpoonComponent.fireTriggered || harpoonComponent.ropeBody != null) {
                     HarpoonRotateToTargetComponent rotateToTarget = player.getHarpoon().getHarpoonRotateToTargetComponent();
                     Vector2 targetPos = harpoonComponent.targetEntity.getTransform().position;
                     Vector2 playerPos = player.getTransform().position;
@@ -66,7 +66,7 @@ public class HarpoonSystem extends EntitySystem {
                         harpoonComponent.fireTriggered = false;
                         harpoonComponent.firing = true;
                         rotateToTarget.startRotate = true;
-                    } else if (harpoonComponent.joint != null) {
+                    } else if (harpoonComponent.ropeBody != null) {
                         rotateToTarget.rotateImmediately = true;
                     }
                 }

@@ -110,6 +110,13 @@ public class StarmapGenerator {
             actors.add(actor);
         }
 
+        Sprite sprite = atlas.createSprite("orb");
+        Material material = new Material(-150, -150, RecipeType.ORB, sprite, world);
+        engine.addEntity(material);
+        MaterialActor actor = new MaterialActor(material, sprite, material);
+        stage.addActor(actor);
+        actors.add(actor);
+
         return actors;
     }
 

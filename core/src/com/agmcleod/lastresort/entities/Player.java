@@ -109,7 +109,7 @@ public class Player extends GameEntity {
         return updated;
     }
 
-    public void setJoint(Joint joint) {
-        getHarpoonComponent().joint = joint;
+    public void setRopeBody(Body body) {
+        getHarpoonComponent().ropeBody = body;
     }
 }

@@ -11,10 +11,11 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.JointDef;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
+import com.badlogic.gdx.physics.box2d.joints.PrismaticJointDef;
+import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
+import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
@@ -69,16 +70,54 @@ public class HarpoonActor extends Actor {
                 HarpoonComponent harpoonComponent = player.getHarpoonComponent();
                 harpoonComponent.firing = false;
                 PhysicsComponent physicsComponent = harpoonComponent.targetEntity.getComponent(PhysicsComponent.class);
-                Body body = physicsComponent.body;
-                DistanceJointDef jointDef = new DistanceJointDef();
-                jointDef.bodyA = body;
-                jointDef.bodyB = player.getBody();
-                jointDef.type = JointDef.JointType.DistanceJoint;
-                jointDef.localAnchorB.set(0, -0.25f);
-                jointDef.length = harpoonComponent.targetEntity.getTransform().position
-                        .dst(player.getTransform().position) * Game.WORLD_TO_BOX;
+                Body targetBody = physicsComponent.body;
+                PolygonShape shape = new PolygonShape();
+                Vector2 playerPosition = player.getTransform().position;
+                Vector2 harpoonPosition = harpoonComponent.targetEntity.getTransform().position;
+                float distance = harpoonPosition.dst(playerPosition) * Game.WORLD_TO_BOX;
+                shape.setAsBox(5 * Game.WORLD_TO_BOX  / 2, distance / 2);
 
-                player.setJoint(world.createJoint(jointDef));
+                BodyDef def = new BodyDef();
+
+                def.type = BodyDef.BodyType.DynamicBody;
+                def.position.set(((harpoonPosition.x - playerPosition.x) / 2 + playerPosition.x) * Game.WORLD_TO_BOX,
+                        ((harpoonPosition.y - playerPosition.y) / 2 + playerPosition.y) * Game.WORLD_TO_BOX);
+                Body ropeBody = world.createBody(def);
+
+                FixtureDef fixtureDef = new FixtureDef();
+                fixtureDef.shape = shape;
+                fixtureDef.density = 0.5f;
+                fixtureDef.friction = 0f;
+                fixtureDef.restitution = 0f;
+                fixtureDef.filter.categoryBits = Game.PLAYER_MASK;
+                fixtureDef.filter.maskBits = Game.OBJECT_MASK;
+                fixtureDef.restitution = 0;
+                ropeBody.createFixture(fixtureDef);
+                player.setRopeBody(ropeBody);
+
+                RevoluteJointDef jointDef = new RevoluteJointDef();
+                jointDef.bodyA = player.getBody();
+                jointDef.bodyB = ropeBody;
+                jointDef.type = JointDef.JointType.RevoluteJoint;
+                jointDef.localAnchorA.set(0, -0.25f);
+                jointDef.localAnchorB.set(0, 1f);
+                jointDef.enableLimit = true;
+                jointDef.lowerAngle = 0;
+                jointDef.upperAngle = 0;
+
+                world.createJoint(jointDef);
+
+                jointDef = new RevoluteJointDef();
+                jointDef.bodyA = ropeBody;
+                jointDef.bodyB = targetBody;
+                jointDef.type = JointDef.JointType.RevoluteJoint;
+                jointDef.localAnchorA.set(0, -0.5f);
+                jointDef.enableLimit = true;
+                jointDef.lowerAngle = 0;
+                jointDef.upperAngle = 0;
+
+                world.createJoint(jointDef);
+                shape.dispose();
             }
         })
         ));
