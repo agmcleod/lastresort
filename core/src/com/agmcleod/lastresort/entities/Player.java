@@ -28,7 +28,7 @@ public class Player extends GameEntity {
         transformComponent.width = sprite.getWidth();
         transformComponent.height = sprite.getHeight();
         this.add(transformComponent);
-        this.add(new PhysicsComponent(world, this, BodyDef.BodyType.DynamicBody, Game.PLAYER_MASK, Game.OBJECT_MASK));
+        this.add(new PhysicsComponent(world, this, BodyDef.BodyType.DynamicBody, Game.PLAYER_MASK, Game.OBJECT_MASK, 1));
         this.add(new HarpoonComponent());
         dead = false;
     }
