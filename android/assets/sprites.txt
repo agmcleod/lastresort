@@ -4,57 +4,64 @@ filter: Linear,Linear
 repeat: none
 harpoon
   rotate: false
-  xy: 976, 2
+  xy: 964, 48
   size: 10, 25
   orig: 10, 25
   offset: 0, 0
   index: -1
 mine
   rotate: false
-  xy: 772, 2
+  xy: 772, 544
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 orb
   rotate: false
-  xy: 874, 90
+  xy: 874, 544
   size: 96, 100
   orig: 100, 100
   offset: 3, 0
   index: -1
 planet
   rotate: false
-  xy: 504, 648
+  xy: 504, 1190
   size: 492, 492
   orig: 500, 500
   offset: 1, 6
   index: -1
 planet2
   rotate: false
-  xy: 2, 2
+  xy: 2, 544
   size: 640, 644
   orig: 650, 650
   offset: 3, 3
   index: -1
 ship
   rotate: false
-  xy: 874, 2
-  size: 100, 86
-  orig: 100, 100
-  offset: 0, 12
+  xy: 964, 2
+  size: 50, 44
+  orig: 50, 50
+  offset: 0, 6
   index: -1
 stars
   rotate: false
-  xy: 2, 648
+  xy: 2, 1190
   size: 500, 494
   orig: 500, 500
   offset: 0, 0
   index: -1
 station
   rotate: false
-  xy: 644, 2
+  xy: 644, 544
   size: 126, 148
   orig: 150, 150
   offset: 4, 0
+  index: -1
+title
+  rotate: false
+  xy: 2, 2
+  size: 960, 540
+  orig: 960, 540
+  offset: 0, 0
   index: -1

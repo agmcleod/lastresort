@@ -1,6 +1,7 @@
 package com.agmcleod.lastresort;
 
 import com.agmcleod.lastresort.screens.PlayScreen;
+import com.agmcleod.lastresort.screens.StartScreen;
 
 public class Game extends com.badlogic.gdx.Game {
     public static final float WORLD_TO_BOX = 0.01f;
@@ -15,6 +16,10 @@ public class Game extends com.badlogic.gdx.Game {
     @Override
     public void create () {
         playScreen = new PlayScreen(this);
+        setScreen(new StartScreen(this));
+    }
+
+    public void startPlayScreen() {
         setScreen(playScreen);
     }
 
