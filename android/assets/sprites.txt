@@ -4,59 +4,87 @@ filter: Linear,Linear
 repeat: none
 harpoon
   rotate: false
-  xy: 964, 48
-  size: 10, 25
-  orig: 10, 25
+  xy: 1016, 2
+  size: 5, 12
+  orig: 5, 12
   offset: 0, 0
   index: -1
 mine
   rotate: false
-  xy: 772, 544
+  xy: 908, 544
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 orb
   rotate: false
-  xy: 874, 544
-  size: 96, 100
+  xy: 806, 544
+  size: 100, 100
   orig: 100, 100
-  offset: 3, 0
+  offset: 0, 0
   index: -1
 planet
   rotate: false
-  xy: 504, 1190
-  size: 492, 492
+  xy: 504, 1196
+  size: 500, 500
   orig: 500, 500
-  offset: 1, 6
+  offset: 0, 0
   index: -1
 planet2
   rotate: false
   xy: 2, 544
-  size: 640, 644
+  size: 650, 650
   orig: 650, 650
-  offset: 3, 3
+  offset: 0, 0
   index: -1
 ship
   rotate: false
-  xy: 964, 2
-  size: 50, 44
+  xy: 964, 210
+  size: 50, 50
   orig: 50, 50
-  offset: 0, 6
+  offset: 0, 0
+  index: -1
+shipbackjet1
+  rotate: false
+  xy: 964, 158
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+shipbackjet2
+  rotate: false
+  xy: 964, 106
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+shipfrontjet1
+  rotate: false
+  xy: 964, 54
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
+  index: -1
+shipfrontjet2
+  rotate: false
+  xy: 964, 2
+  size: 50, 50
+  orig: 50, 50
+  offset: 0, 0
   index: -1
 stars
   rotate: false
-  xy: 2, 1190
-  size: 500, 494
+  xy: 2, 1196
+  size: 500, 500
   orig: 500, 500
   offset: 0, 0
   index: -1
 station
   rotate: false
-  xy: 644, 544
-  size: 126, 148
+  xy: 654, 544
+  size: 150, 150
   orig: 150, 150
-  offset: 4, 0
+  offset: 0, 0
   index: -1
 title
   rotate: false

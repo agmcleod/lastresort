@@ -14,7 +14,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.*;
@@ -69,7 +68,7 @@ public class PlayScreen implements Screen {
         atlas = new TextureAtlas(Gdx.files.internal("sprites.txt"));
         bodyCleanup = new Array<Body>();
         createScene();
-        setupUiStage();
+        createUi();
         Rectangle viewBounds = new Rectangle(-StarmapGenerator.MAP_WIDTH / 2, -StarmapGenerator.MAP_HEIGHT / 2, StarmapGenerator.MAP_WIDTH, StarmapGenerator.MAP_HEIGHT);
         followCamera = new FollowCamera(stage.getCamera(), player.getTransform(), viewBounds);
         // ((OrthographicCamera) stage.getCamera()).zoom = 10f;
@@ -93,11 +92,11 @@ public class PlayScreen implements Screen {
         Station station = new Station(stationRegion, world, recipeManager);
         engine.addEntity(station);
 
-        Sprite playerSprite = atlas.createSprite("ship");
+        TextureAtlas.AtlasRegion playerSprite = atlas.findRegion("ship");
         player = new Player(playerSprite, world);
         engine.addEntity(player);
-
-        Harpoon harpoon = new Harpoon(player);
+        TextureAtlas.AtlasRegion harpoonRegion = atlas.findRegion("harpoon");
+        Harpoon harpoon = new Harpoon(harpoonRegion, player);
         engine.addEntity(harpoon);
         engine.addSystem(new MovementSystem());
         engine.addSystem(new HarpoonSystem(world));
@@ -107,8 +106,7 @@ public class PlayScreen implements Screen {
         player.setHarpoon(harpoon);
 
         // populate the stage with actors
-        PlayerActor playerActor = new PlayerActor(playerSprite, player);
-        TextureAtlas.AtlasRegion harpoonRegion = atlas.findRegion("harpoon");
+        PlayerActor playerActor = new PlayerActor(atlas, player);
         HarpoonActor harpoonActor = new HarpoonActor(world, harpoonRegion, harpoon);
 
         playerActor.addActor(harpoonActor);
@@ -128,49 +126,11 @@ public class PlayScreen implements Screen {
             recipeManager.addAvailableRecipeType(actor.getRecipeType());
             actor.addListener(new HarpoonTargetListener(actor, player));
         }
+
+        stage.addActor(new RopeActor(player, atlas.findRegion("harpoon")));
     }
 
-    @Override
-    public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        float dt = Gdx.graphics.getDeltaTime();
-        engine.update(dt);
-
-        Label coordinates = uiMap.get("coordinates");
-        Vector2 playerPosition = player.getTransform().position;
-        String coordinatesText = MathUtils.floor(playerPosition.x) +
-                "," + MathUtils.floor(playerPosition.y);
-        coordinates.setText(coordinatesText);
-
-        followCamera.update();
-
-        stage.act(dt);
-        stage.draw();
-
-        uiStage.act(dt);
-        uiStage.draw();
-
-        cameraCpy.set(stage.getCamera().combined);
-        debugRenderer.render(world, cameraCpy.scl(Game.BOX_TO_WORLD));
-
-        world.step(1/60f, 6, 2);
-
-        for (int i = bodyCleanup.size - 1; i >= 0; i--) {
-            Body body = bodyCleanup.get(i);
-            world.destroyBody(body);
-            bodyCleanup.removeIndex(i);
-        }
-
-        if (player.isDead()) {
-            game.setScreen(this);
-        } else if (recipeManager.availableRecipiesFinished()) {
-            Gdx.app.exit();
-        }
-    }
-
-    public void setupUiStage() {
+    public void createUi() {
         uiFont = new BitmapFont(Gdx.files.internal("xolo24.fnt"), Gdx.files.internal("xolo24.png"), false);
         uiMap = new ObjectMap<String, Label>();
         uiStage = new Stage(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
@@ -199,6 +159,46 @@ public class PlayScreen implements Screen {
         uiMap.put("coordinates", coordinates);
 
         uiStage.addActor(table);
+    }
+
+    @Override
+    public void render(float delta) {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        float dt = Gdx.graphics.getDeltaTime();
+        engine.update(dt);
+
+        Label coordinates = uiMap.get("coordinates");
+        Vector2 playerPosition = player.getTransform().position;
+        String coordinatesText = MathUtils.floor(playerPosition.x) +
+                "," + MathUtils.floor(playerPosition.y);
+        coordinates.setText(coordinatesText);
+
+        followCamera.update();
+
+        stage.act(dt);
+        stage.draw();
+
+        uiStage.act(dt);
+        uiStage.draw();
+
+        cameraCpy.set(stage.getCamera().combined);
+        // debugRenderer.render(world, cameraCpy.scl(Game.BOX_TO_WORLD));
+
+        world.step(1/60f, 6, 2);
+
+        for (int i = bodyCleanup.size - 1; i >= 0; i--) {
+            Body body = bodyCleanup.get(i);
+            world.destroyBody(body);
+            bodyCleanup.removeIndex(i);
+        }
+
+        if (player.isDead()) {
+            game.setScreen(this);
+        } else if (recipeManager.availableRecipiesFinished()) {
+            Gdx.app.exit();
+        }
     }
 
     @Override

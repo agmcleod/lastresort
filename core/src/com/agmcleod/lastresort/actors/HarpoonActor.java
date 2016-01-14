@@ -4,6 +4,7 @@ import com.agmcleod.lastresort.Game;
 import com.agmcleod.lastresort.components.HarpoonComponent;
 import com.agmcleod.lastresort.components.HarpoonRotateToTargetComponent;
 import com.agmcleod.lastresort.components.PhysicsComponent;
+import com.agmcleod.lastresort.components.TransformComponent;
 import com.agmcleod.lastresort.entities.Harpoon;
 import com.agmcleod.lastresort.entities.Player;
 import com.agmcleod.lastresort.helpers.EntityToScreenBridge;
@@ -12,10 +13,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
-import com.badlogic.gdx.physics.box2d.joints.PrismaticJointDef;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
-import com.badlogic.gdx.physics.box2d.joints.WeldJointDef;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
@@ -32,7 +30,8 @@ public class HarpoonActor extends Actor {
     public HarpoonActor(World world, TextureRegion textureRegion, Harpoon harpoon) {
         this.harpoon = harpoon;
         this.textureRegion = textureRegion;
-        this.setBounds(0, 0, textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+        TransformComponent transformComponent = harpoon.getTransform();
+        this.setBounds(transformComponent.position.x, transformComponent.position.y, transformComponent.width, transformComponent.height);
         this.world = world;
     }
 
@@ -74,8 +73,10 @@ public class HarpoonActor extends Actor {
                 PolygonShape shape = new PolygonShape();
                 Vector2 playerPosition = player.getTransform().position;
                 Vector2 harpoonPosition = harpoonComponent.targetEntity.getTransform().position;
-                float distance = harpoonPosition.dst(playerPosition) * Game.WORLD_TO_BOX;
-                shape.setAsBox(5 * Game.WORLD_TO_BOX  / 2, distance / 2);
+                float distance = harpoonPosition.dst(playerPosition);
+                harpoonComponent.ropeWidth = 5;
+                harpoonComponent.ropeHeight = distance;
+                shape.setAsBox((harpoonComponent.ropeWidth * Game.WORLD_TO_BOX) / 2, (harpoonComponent.ropeHeight * Game.WORLD_TO_BOX) / 2);
 
                 BodyDef def = new BodyDef();
 

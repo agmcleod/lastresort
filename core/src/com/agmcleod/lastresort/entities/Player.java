@@ -7,6 +7,7 @@ import com.agmcleod.lastresort.components.PhysicsComponent;
 import com.agmcleod.lastresort.components.TransformComponent;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Joint;
@@ -22,11 +23,11 @@ public class Player extends GameEntity {
     private boolean rotateClockwise;
     private boolean thrustForward;
     private boolean thrustBackward;
-    public Player(Sprite sprite, World world) {
+    public Player(TextureRegion region, World world) {
         this.name = "Player";
         TransformComponent transformComponent = new TransformComponent();
-        transformComponent.width = sprite.getWidth();
-        transformComponent.height = sprite.getHeight();
+        transformComponent.width = region.getRegionWidth();
+        transformComponent.height = region.getRegionHeight();
         this.add(transformComponent);
         this.add(new PhysicsComponent(world, this, BodyDef.BodyType.DynamicBody, Game.PLAYER_MASK, Game.OBJECT_MASK, 1));
         this.add(new HarpoonComponent());

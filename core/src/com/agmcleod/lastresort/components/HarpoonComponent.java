@@ -14,6 +14,8 @@ public class HarpoonComponent implements Component {
     public boolean fireTriggered = false;
     public GameEntity targetEntity;
     public Body ropeBody = null;
+    public float ropeWidth = 0;
+    public float ropeHeight = 0;
 
     public void cleanup() {
         firing = false;
