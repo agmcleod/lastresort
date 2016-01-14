@@ -76,7 +76,7 @@ public class PlayScreen implements Screen {
     }
 
     public void createScene() {
-        recipeManager = new RecipeManager();
+        recipeManager = new RecipeManager(atlas);
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
         stage = new Stage(new ScalingViewport(Scaling.stretch, width, height));
@@ -119,12 +119,13 @@ public class PlayScreen implements Screen {
         starmapGenerator = new StarmapGenerator();
         starmapGenerator.buildMap(world, engine, stage, atlas);
         starmapGenerator.placeMines(world, engine, stage, atlas);
-        Array<StillObjectActor> collectObjects = starmapGenerator.buildCollectObjects(world, engine, stage, atlas);
+        Array<MaterialActor> collectObjects = starmapGenerator.buildCollectObjects(world, engine, stage, atlas);
         starmapGenerator.buildBorders(engine, world);
 
-        Iterator<StillObjectActor> stillActorIterator = collectObjects.iterator();
+        Iterator<MaterialActor> stillActorIterator = collectObjects.iterator();
         while (stillActorIterator.hasNext()) {
-            StillObjectActor actor = stillActorIterator.next();
+            MaterialActor actor = stillActorIterator.next();
+            recipeManager.addAvailableRecipeType(actor.getRecipeType());
             actor.addListener(new HarpoonTargetListener(actor, player));
         }
     }
@@ -164,6 +165,8 @@ public class PlayScreen implements Screen {
 
         if (player.isDead()) {
             game.setScreen(this);
+        } else if (recipeManager.availableRecipiesFinished()) {
+            Gdx.app.exit();
         }
     }
 
@@ -179,24 +182,8 @@ public class PlayScreen implements Screen {
         table.add(coordinates).expandX().align(Align.topLeft);
         RecipeGroup recipeGroup = new RecipeGroup(shapeRenderer);
         recipeManager.setRecipeGroup(recipeGroup);
-
-        Iterator<RecipeType> it = recipeManager.getRecipes().iterator();
-        int index = 0;
-        while (it.hasNext()) {
-            RecipeType type = it.next();
-            switch (type) {
-                case ORB:
-                    TextureAtlas.AtlasRegion region = atlas.findRegion("orb");
-                    RecipeItemActor ria = new RecipeItemActor(index * (region.getRegionWidth() / 2 + 20), 0, region, type);
-                    recipeGroup.addActor(ria);
-                    break;
-                default:
-                    break;
-            }
-
-            index++;
-        }
-
+        recipeManager.makeNewRecipe();
+        recipeManager.populateUi();
 
         table.add(recipeGroup).width(recipeGroup.getWidth());
         table.padLeft(10);

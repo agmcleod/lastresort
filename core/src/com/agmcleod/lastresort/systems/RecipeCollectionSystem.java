@@ -49,7 +49,8 @@ public class RecipeCollectionSystem extends EntitySystem {
                 player.getHarpoonComponent().cleanup();
                 recipeManager.consumeItem();
                 if (recipeManager.recipeFinished()) {
-
+                    recipeManager.makeNewRecipe();
+                    recipeManager.populateUi();
                 }
             }
         }

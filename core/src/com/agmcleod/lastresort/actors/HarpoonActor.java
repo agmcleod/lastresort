@@ -111,7 +111,7 @@ public class HarpoonActor extends Actor {
                 jointDef.bodyA = ropeBody;
                 jointDef.bodyB = targetBody;
                 jointDef.type = JointDef.JointType.RevoluteJoint;
-                jointDef.localAnchorA.set(0, -0.5f);
+                jointDef.localAnchorA.set(0, -1);
                 jointDef.enableLimit = true;
                 jointDef.lowerAngle = 0;
                 jointDef.upperAngle = 0;

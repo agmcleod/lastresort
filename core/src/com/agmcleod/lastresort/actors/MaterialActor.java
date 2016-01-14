@@ -1,5 +1,6 @@
 package com.agmcleod.lastresort.actors;
 
+import com.agmcleod.lastresort.RecipeType;
 import com.agmcleod.lastresort.entities.GameEntity;
 import com.agmcleod.lastresort.entities.Material;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -22,5 +23,9 @@ public class MaterialActor extends StillObjectActor {
         if (material.getCollectableComponent().isCollected) {
             remove();
         }
+    }
+
+    public RecipeType getRecipeType() {
+        return material.getRecipeType();
     }
 }

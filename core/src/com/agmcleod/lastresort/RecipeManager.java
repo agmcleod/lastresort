@@ -2,21 +2,34 @@ package com.agmcleod.lastresort;
 
 import com.agmcleod.lastresort.actors.RecipeGroup;
 import com.agmcleod.lastresort.actors.RecipeItemActor;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.SnapshotArray;
+
+import java.util.Iterator;
 
 /**
  * Created by aaronmcleod on 2016-01-11.
  */
 public class RecipeManager {
+    private TextureAtlas atlas;
     private Array<RecipeType> recipes;
+    private Array<RecipeType> availableRecipies;
     private RecipeGroup recipeGroup;
 
-    public RecipeManager() {
+    public RecipeManager(TextureAtlas atlas) {
         recipes = new Array<RecipeType>();
-        recipes.add(RecipeType.ORB);
-        recipes.add(RecipeType.ORB);
+        availableRecipies = new Array<RecipeType>();
+        this.atlas = atlas;
+    }
+
+    public void addAvailableRecipeType(RecipeType rt) {
+        availableRecipies.add(rt);
+    }
+
+    public boolean availableRecipiesFinished() {
+        return availableRecipies.size == 0;
     }
 
     public void consumeItem() {
@@ -29,7 +42,42 @@ public class RecipeManager {
                 break;
             }
         }
+
+        for (int i = availableRecipies.size - 1; i >= 0; i--) {
+            RecipeType availableRecipeType = availableRecipies.get(i);
+            if (availableRecipeType == type) {
+                availableRecipies.removeIndex(i);
+                break;
+            }
+        }
     }
+
+    public void makeNewRecipe() {
+        int len = Math.min(3, availableRecipies.size);
+        for (int i = 0; i < len; i++) {
+            recipes.add(availableRecipies.get(i));
+        }
+    }
+
+    public void populateUi() {
+        Iterator<RecipeType> it = recipes.iterator();
+        int index = 0;
+        while (it.hasNext()) {
+            RecipeType type = it.next();
+            switch (type) {
+                case ORB:
+                    TextureAtlas.AtlasRegion region = atlas.findRegion("orb");
+                    RecipeItemActor ria = new RecipeItemActor(index * (region.getRegionWidth() / 2 + 20), 0, region, type);
+                    recipeGroup.addActor(ria);
+                    break;
+                default:
+                    break;
+            }
+
+            index++;
+        }
+    }
+
 
     public boolean recipeFinished() {
         return recipes.size == 0;

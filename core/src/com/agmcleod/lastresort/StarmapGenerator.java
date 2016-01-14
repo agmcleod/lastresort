@@ -77,8 +77,8 @@ public class StarmapGenerator {
         }
     }
 
-    public Array<StillObjectActor> buildCollectObjects(World world, Engine engine, Stage stage, TextureAtlas atlas) {
-        Array<StillObjectActor> actors = new Array<StillObjectActor>();
+    public Array<MaterialActor> buildCollectObjects(World world, Engine engine, Stage stage, TextureAtlas atlas) {
+        Array<MaterialActor> actors = new Array<MaterialActor>();
         for (int i = 0; i < 5; i++) {
             int x;
             int y;
