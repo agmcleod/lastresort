@@ -20,7 +20,7 @@ public class Station extends GameEntity {
 
         this.add(transformComponent);
 
-        PhysicsComponent physicsComponent = new PhysicsComponent(world, this, BodyDef.BodyType.StaticBody, Game.STATION_MASK, Game.OBJECT_MASK, 1);
+        PhysicsComponent physicsComponent = new PhysicsComponent(world, this, BodyDef.BodyType.StaticBody, Game.STATION_MASK, Game.OBJECT_MASK);
         this.add(physicsComponent);
         this.recipeManager = recipeManager;
     }

@@ -14,14 +14,15 @@ public class RecipeItemActor extends Actor {
 
     public RecipeItemActor(float x, float y, TextureRegion textureRegion, RecipeType recipeType) {
         this.textureRegion = textureRegion;
-        setBounds(x - textureRegion.getRegionWidth() / 5, y, textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+        setBounds(x, y, textureRegion.getRegionWidth(), textureRegion.getRegionHeight());
+        setOrigin(getWidth() / 2, getHeight() / 2);
         setScale(0.5f, 0.5f);
         this.recipeType = recipeType;
     }
 
     @Override
     public void draw(Batch batch, float alpha) {
-        batch.draw(textureRegion, getX(), getY(), getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), getScaleX(), getScaleY(), this.getRotation());
+        batch.draw(textureRegion, getX() - getWidth() / 2, getY() - getHeight() / 2, getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), getScaleX(), getScaleY(), this.getRotation());
     }
 
     public RecipeType getRecipeType() {

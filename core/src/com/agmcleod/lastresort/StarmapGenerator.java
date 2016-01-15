@@ -95,14 +95,23 @@ public class StarmapGenerator {
 
             RecipeType recipeType = null;
 
-            int num = 0; // will be random range
+            int num = MathUtils.random(0, 2);
+            Sprite sprite = null;
             switch (num) {
                 case 0:
                     recipeType = RecipeType.ORB;
+                    sprite = atlas.createSprite("orb");
+                    break;
+                case 1:
+                    recipeType = RecipeType.PART;
+                    sprite = atlas.createSprite("part");
+                    break;
+                case 2:
+                    recipeType = RecipeType.ROCK;
+                    sprite = atlas.createSprite("rock");
                     break;
             }
 
-            Sprite sprite = atlas.createSprite("orb");
             Material material = new Material(x, y, recipeType, sprite, world);
             engine.addEntity(material);
             MaterialActor actor = new MaterialActor(material, sprite, material);

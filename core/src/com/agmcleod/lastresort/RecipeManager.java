@@ -64,14 +64,23 @@ public class RecipeManager {
         int index = 0;
         while (it.hasNext()) {
             RecipeType type = it.next();
+            TextureAtlas.AtlasRegion region = null;
             switch (type) {
                 case ORB:
-                    TextureAtlas.AtlasRegion region = atlas.findRegion("orb");
-                    RecipeItemActor ria = new RecipeItemActor(index * (region.getRegionWidth() / 2 + 20), 0, region, type);
-                    recipeGroup.addActor(ria);
+                    region = atlas.findRegion("orb");
+                    break;
+                case PART:
+                    region = atlas.findRegion("part");
+                    break;
+                case ROCK:
+                    region = atlas.findRegion("rock");
                     break;
                 default:
                     break;
+            }
+            if (region != null) {
+                RecipeItemActor ria = new RecipeItemActor(index * 60 + 35, 50, region, type);
+                recipeGroup.addActor(ria);
             }
 
             index++;

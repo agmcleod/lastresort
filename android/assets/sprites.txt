@@ -23,6 +23,13 @@ orb
   orig: 100, 100
   offset: 0, 0
   index: -1
+part
+  rotate: false
+  xy: 964, 262
+  size: 42, 65
+  orig: 42, 65
+  offset: 0, 0
+  index: -1
 planet
   rotate: false
   xy: 504, 1196
@@ -35,6 +42,13 @@ planet2
   xy: 2, 544
   size: 650, 650
   orig: 650, 650
+  offset: 0, 0
+  index: -1
+rock
+  rotate: false
+  xy: 806, 646
+  size: 80, 80
+  orig: 80, 80
   offset: 0, 0
   index: -1
 ship

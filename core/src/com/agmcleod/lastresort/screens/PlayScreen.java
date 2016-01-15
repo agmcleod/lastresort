@@ -184,7 +184,7 @@ public class PlayScreen implements Screen {
         uiStage.draw();
 
         cameraCpy.set(stage.getCamera().combined);
-        // debugRenderer.render(world, cameraCpy.scl(Game.BOX_TO_WORLD));
+        debugRenderer.render(world, cameraCpy.scl(Game.BOX_TO_WORLD));
 
         world.step(1/60f, 6, 2);
 

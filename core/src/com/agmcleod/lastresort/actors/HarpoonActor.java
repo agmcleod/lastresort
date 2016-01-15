@@ -91,7 +91,7 @@ public class HarpoonActor extends Actor {
                 fixtureDef.friction = 0f;
                 fixtureDef.restitution = 0f;
                 fixtureDef.filter.categoryBits = Game.PLAYER_MASK;
-                fixtureDef.filter.maskBits = Game.OBJECT_MASK;
+                fixtureDef.filter.maskBits = 0;
                 fixtureDef.restitution = 0;
                 ropeBody.createFixture(fixtureDef);
                 player.setRopeBody(ropeBody);

@@ -8,10 +8,7 @@ import com.agmcleod.lastresort.components.TransformComponent;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Joint;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 
 /**
  * Created by Aaron on 12/20/2015.
@@ -29,7 +26,15 @@ public class Player extends GameEntity {
         transformComponent.width = region.getRegionWidth();
         transformComponent.height = region.getRegionHeight();
         this.add(transformComponent);
-        this.add(new PhysicsComponent(world, this, BodyDef.BodyType.DynamicBody, Game.PLAYER_MASK, Game.OBJECT_MASK, 1));
+        PolygonShape shape = new PolygonShape();
+        float box2dWidth = transformComponent.width * Game.WORLD_TO_BOX;
+        float box2dHeight = transformComponent.height * Game.WORLD_TO_BOX;
+        shape.set(new float[]{
+                0, box2dHeight/2,
+                -box2dWidth/2, -box2dHeight/3f,
+                box2dWidth/2, -box2dHeight/3f
+        });
+        this.add(new PhysicsComponent(world, this, BodyDef.BodyType.DynamicBody, shape, Game.PLAYER_MASK, Game.OBJECT_MASK));
         this.add(new HarpoonComponent());
         dead = false;
     }
