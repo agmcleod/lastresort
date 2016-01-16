@@ -15,25 +15,25 @@ import java.util.Iterator;
 public class RecipeManager {
     private TextureAtlas atlas;
     private Array<RecipeType> recipes;
-    private Array<RecipeType> availableRecipies;
+    private Array<RecipeType> availableRecipes;
     private RecipeGroup recipeGroup;
 
     public RecipeManager(TextureAtlas atlas) {
         recipes = new Array<RecipeType>();
-        availableRecipies = new Array<RecipeType>();
+        availableRecipes = new Array<RecipeType>();
         this.atlas = atlas;
     }
 
     public void addAvailableRecipeType(RecipeType rt) {
-        availableRecipies.add(rt);
+        availableRecipes.add(rt);
     }
 
-    public boolean availableRecipiesFinished() {
-        return availableRecipies.size == 0;
+    public boolean availableRecipesFinished() {
+        return availableRecipes.size == 0;
     }
 
-    public void consumeItem() {
-        RecipeType type = recipes.removeIndex(0);
+    public void consumeItem(RecipeType type) {
+        recipes.removeIndex(recipes.indexOf(type, false));
         SnapshotArray<Actor> actors = recipeGroup.getChildren();
         for (int i = actors.size - 1; i >= 0; i--) {
             Actor actor = actors.get(i);
@@ -43,19 +43,20 @@ public class RecipeManager {
             }
         }
 
-        for (int i = availableRecipies.size - 1; i >= 0; i--) {
-            RecipeType availableRecipeType = availableRecipies.get(i);
+        // remove it from the total available
+        for (int i = availableRecipes.size - 1; i >= 0; i--) {
+            RecipeType availableRecipeType = availableRecipes.get(i);
             if (availableRecipeType == type) {
-                availableRecipies.removeIndex(i);
+                availableRecipes.removeIndex(i);
                 break;
             }
         }
     }
 
     public void makeNewRecipe() {
-        int len = Math.min(3, availableRecipies.size);
+        int len = Math.min(3, availableRecipes.size);
         for (int i = 0; i < len; i++) {
-            recipes.add(availableRecipies.get(i));
+            recipes.add(availableRecipes.get(i));
         }
     }
 

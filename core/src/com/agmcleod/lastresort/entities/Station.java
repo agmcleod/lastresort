@@ -29,7 +29,7 @@ public class Station extends GameEntity {
     public void collisionCallback(GameEntity ge) {
         if (ge instanceof Material) {
             Material material = (Material) ge;
-            if (material.getRecipeType() == recipeManager.getRecipes().get(0)) {
+            if (recipeManager.getRecipes().contains(material.getRecipeType(), false)) {
                 material.getCollectableComponent().isCollected = true;
             }
         }

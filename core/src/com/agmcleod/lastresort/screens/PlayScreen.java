@@ -3,10 +3,7 @@ package com.agmcleod.lastresort.screens;
 import com.agmcleod.lastresort.*;
 import com.agmcleod.lastresort.actors.*;
 import com.agmcleod.lastresort.entities.*;
-import com.agmcleod.lastresort.systems.HarpoonSystem;
-import com.agmcleod.lastresort.systems.MovementSystem;
-import com.agmcleod.lastresort.systems.RecipeCollectionSystem;
-import com.agmcleod.lastresort.systems.StarsParallaxSystem;
+import com.agmcleod.lastresort.systems.*;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -67,6 +64,7 @@ public class PlayScreen implements Screen {
 
         atlas = new TextureAtlas(Gdx.files.internal("sprites.txt"));
         bodyCleanup = new Array<Body>();
+        uiFont = new BitmapFont(Gdx.files.internal("xolo24.fnt"), Gdx.files.internal("xolo24.png"), false);
         createScene();
         createUi();
         Rectangle viewBounds = new Rectangle(-StarmapGenerator.MAP_WIDTH / 2, -StarmapGenerator.MAP_HEIGHT / 2, StarmapGenerator.MAP_WIDTH, StarmapGenerator.MAP_HEIGHT);
@@ -98,10 +96,14 @@ public class PlayScreen implements Screen {
         TextureAtlas.AtlasRegion harpoonRegion = atlas.findRegion("harpoon");
         Harpoon harpoon = new Harpoon(harpoonRegion, player);
         engine.addEntity(harpoon);
+        ScanUi scanUi = new ScanUi();
+        engine.addEntity(scanUi);
+
         engine.addSystem(new MovementSystem());
         engine.addSystem(new HarpoonSystem(world));
         engine.addSystem(new StarsParallaxSystem(stage.getCamera()));
         engine.addSystem(new RecipeCollectionSystem(engine, player, recipeManager, world, bodyCleanup));
+        engine.addSystem(new ScanSystem(stage.getCamera()));
 
         player.setHarpoon(harpoon);
 
@@ -113,6 +115,7 @@ public class PlayScreen implements Screen {
         stage.addActor(new StarsActor(stars, starsRegion));
         stage.addActor(new StationActor(station, stationRegion));
         stage.addActor(playerActor);
+        stage.addActor(new ScanUiActor(player, scanUi, uiFont));
         stage.setKeyboardFocus(playerActor);
         starmapGenerator = new StarmapGenerator();
         starmapGenerator.buildMap(world, engine, stage, atlas);
@@ -131,7 +134,6 @@ public class PlayScreen implements Screen {
     }
 
     public void createUi() {
-        uiFont = new BitmapFont(Gdx.files.internal("xolo24.fnt"), Gdx.files.internal("xolo24.png"), false);
         uiMap = new ObjectMap<String, Label>();
         uiStage = new Stage(new ScalingViewport(Scaling.stretch, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         Skin skin = new Skin();
@@ -149,7 +151,7 @@ public class PlayScreen implements Screen {
         table.padLeft(10);
         table.padTop(10);
 
-        Label controls = new Label("A / D - rotate\nSpace - Thrust\nCtrl - Reverse", skin);
+        Label controls = new Label("A / D - rotate\nSpace - Thrust\nCtrl - Reverse\nG - Scan Location", skin);
         controls.setAlignment(Align.right);
         table.row();
         table.add(controls).colspan(2).expand().align(Align.bottomRight);
@@ -184,7 +186,7 @@ public class PlayScreen implements Screen {
         uiStage.draw();
 
         cameraCpy.set(stage.getCamera().combined);
-        debugRenderer.render(world, cameraCpy.scl(Game.BOX_TO_WORLD));
+        //debugRenderer.render(world, cameraCpy.scl(Game.BOX_TO_WORLD));
 
         world.step(1/60f, 6, 2);
 
@@ -196,8 +198,8 @@ public class PlayScreen implements Screen {
 
         if (player.isDead()) {
             game.setScreen(this);
-        } else if (recipeManager.availableRecipiesFinished()) {
-            Gdx.app.exit();
+        } else if (recipeManager.availableRecipesFinished()) {
+            game.startEndScreen();
         }
     }
 

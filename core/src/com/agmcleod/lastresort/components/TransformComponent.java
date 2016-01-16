@@ -18,4 +18,12 @@ public class TransformComponent implements Component {
         rotation = 0;
         scale = new Vector2(1, 1);
     }
+
+    public TransformComponent(float x, float y, float width, float height, float rotation, float scaleX, float scaleY) {
+        position = new Vector2(x, y);
+        this.width = width;
+        this.height = height;
+        this.rotation = rotation;
+        scale = new Vector2(scaleX, scaleY);
+    }
 }

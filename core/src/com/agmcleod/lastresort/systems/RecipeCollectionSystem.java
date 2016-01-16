@@ -47,7 +47,7 @@ public class RecipeCollectionSystem extends EntitySystem {
                 bodyCleanup.add(material.getBody());
                 bodyCleanup.add(player.getHarpoonComponent().ropeBody);
                 player.getHarpoonComponent().cleanup();
-                recipeManager.consumeItem();
+                recipeManager.consumeItem(material.getRecipeType());
                 if (recipeManager.recipeFinished()) {
                     recipeManager.makeNewRecipe();
                     recipeManager.populateUi();

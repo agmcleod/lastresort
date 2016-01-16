@@ -1,10 +1,7 @@
 package com.agmcleod.lastresort.entities;
 
 import com.agmcleod.lastresort.Game;
-import com.agmcleod.lastresort.components.ComponentMappers;
-import com.agmcleod.lastresort.components.HarpoonComponent;
-import com.agmcleod.lastresort.components.PhysicsComponent;
-import com.agmcleod.lastresort.components.TransformComponent;
+import com.agmcleod.lastresort.components.*;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -36,6 +33,7 @@ public class Player extends GameEntity {
         });
         this.add(new PhysicsComponent(world, this, BodyDef.BodyType.DynamicBody, shape, Game.PLAYER_MASK, Game.OBJECT_MASK));
         this.add(new HarpoonComponent());
+        this.add(new ScanMaterialsComponent());
         dead = false;
     }
 
@@ -87,6 +85,10 @@ public class Player extends GameEntity {
         return harpoon;
     }
 
+    public ScanMaterialsComponent getScanMaterialsComponent() {
+        return ComponentMappers.scanMaterials.get(this);
+    }
+
     public void setHarpoon(Harpoon harpoon) {
         this.harpoon = harpoon;
     }
@@ -108,6 +110,10 @@ public class Player extends GameEntity {
                 break;
             case Input.Keys.CONTROL_LEFT:
                 thrustBackward = state;
+                updated = true;
+                break;
+            case Input.Keys.G:
+                getScanMaterialsComponent().scanTriggerd = state;
                 updated = true;
                 break;
         }

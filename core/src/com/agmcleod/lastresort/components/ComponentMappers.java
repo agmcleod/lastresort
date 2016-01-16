@@ -11,4 +11,7 @@ public class ComponentMappers {
     public static final ComponentMapper<HarpoonRotateToTargetComponent> harpoonRotateToTarget = ComponentMapper.getFor(HarpoonRotateToTargetComponent.class);
     public static final ComponentMapper<TransformComponent> transform = ComponentMapper.getFor(TransformComponent.class);
     public static final ComponentMapper<PhysicsComponent> physics = ComponentMapper.getFor(PhysicsComponent.class);
+    public static final ComponentMapper<ScanMaterialsComponent> scanMaterials = ComponentMapper.getFor(ScanMaterialsComponent.class);
+    public static final ComponentMapper<ScanUiComponent> scanUi = ComponentMapper.getFor(ScanUiComponent.class);
+    public static final ComponentMapper<VisibilityComponent> visible = ComponentMapper.getFor(VisibilityComponent.class);
 }
