@@ -19,9 +19,8 @@ public class RecipeGroup extends Group {
     @Override
     public void draw(Batch batch, float alpha) {
         batch.end();
-
         renderer.begin(ShapeRenderer.ShapeType.Line);
-        renderer.setColor(Color.WHITE);
+        renderer.setColor(1, 1, 1, 1);
         renderer.rect(this.getX(), this.getY(), this.getWidth(), this.getHeight());
         renderer.end();
         batch.begin();

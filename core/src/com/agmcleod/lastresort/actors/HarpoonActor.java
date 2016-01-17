@@ -1,6 +1,7 @@
 package com.agmcleod.lastresort.actors;
 
 import com.agmcleod.lastresort.Game;
+import com.agmcleod.lastresort.InstructionState;
 import com.agmcleod.lastresort.components.HarpoonComponent;
 import com.agmcleod.lastresort.components.HarpoonRotateToTargetComponent;
 import com.agmcleod.lastresort.components.PhysicsComponent;
@@ -8,6 +9,7 @@ import com.agmcleod.lastresort.components.TransformComponent;
 import com.agmcleod.lastresort.entities.Harpoon;
 import com.agmcleod.lastresort.entities.Player;
 import com.agmcleod.lastresort.helpers.EntityToScreenBridge;
+import com.agmcleod.lastresort.screens.PlayScreen;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
@@ -25,14 +27,16 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
  */
 public class HarpoonActor extends Actor {
     private Harpoon harpoon;
+    private PlayScreen playScreen;
     private TextureRegion textureRegion;
     private World world;
-    public HarpoonActor(World world, TextureRegion textureRegion, Harpoon harpoon) {
+    public HarpoonActor(PlayScreen playScreen, World world, TextureRegion textureRegion, Harpoon harpoon) {
         this.harpoon = harpoon;
         this.textureRegion = textureRegion;
         TransformComponent transformComponent = harpoon.getTransform();
         this.setBounds(transformComponent.position.x, transformComponent.position.y, transformComponent.width, transformComponent.height);
         this.world = world;
+        this.playScreen = playScreen;
     }
 
     @Override
@@ -66,6 +70,8 @@ public class HarpoonActor extends Actor {
         addAction((sequence(Actions.rotateTo(getAbsoluteAngle(harpoonRotateToTargetComponent), 0.5f), new RunnableAction() {
             @Override
             public void run() {
+                playScreen.nextInstruction(InstructionState.GRAB_OBJECT);
+
                 HarpoonComponent harpoonComponent = player.getHarpoonComponent();
                 harpoonComponent.firing = false;
                 PhysicsComponent physicsComponent = harpoonComponent.targetEntity.getComponent(PhysicsComponent.class);

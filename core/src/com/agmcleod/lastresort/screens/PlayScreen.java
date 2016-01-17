@@ -7,6 +7,8 @@ import com.agmcleod.lastresort.systems.*;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -34,10 +36,15 @@ public class PlayScreen implements Screen {
     private TextureAtlas atlas;
     private Array<Body> bodyCleanup;
     private Matrix4 cameraCpy;
+    private float collectOthersInstructionTimeout;
     private Box2DDebugRenderer debugRenderer;
     private Engine engine;
+    private float fadeTimer;
     private FollowCamera followCamera;
     private Game game;
+    private InstructionState instructionState;
+    private Label instructions;
+    private Music music;
     private Player player;
     private Array<Texture> textures;
     private RecipeManager recipeManager;
@@ -49,12 +56,18 @@ public class PlayScreen implements Screen {
     private ObjectMap<String, Label> uiMap;
     private World world;
 
+    private boolean transitioningIn;
+    private boolean transitioningOut;
+    private TransitionCallback fadeInCallback;
+    private TransitionCallback fadeOutCallback;
+
     public PlayScreen(Game game) {
         this.game = game;
     }
 
     @Override
     public void show() {
+        instructionState = InstructionState.GRAB_OBJECT;
         engine = new Engine();
         world = new World(new Vector2(0, 0), true);
         world.setContactListener(new CollisionListener());
@@ -69,6 +82,27 @@ public class PlayScreen implements Screen {
         createUi();
         Rectangle viewBounds = new Rectangle(-StarmapGenerator.MAP_WIDTH / 2, -StarmapGenerator.MAP_HEIGHT / 2, StarmapGenerator.MAP_WIDTH, StarmapGenerator.MAP_HEIGHT);
         followCamera = new FollowCamera(stage.getCamera(), player.getTransform(), viewBounds);
+        music = Gdx.audio.newMusic(Gdx.files.internal("lastresort.ogg"));
+        music.setLooping(true);
+        music.play();
+        transitioningIn = true;
+        transitioningOut = false;
+
+        fadeTimer = Game.FADE_TIMEOUT;
+
+        fadeInCallback = new TransitionCallback() {
+            @Override
+            public void callback() {
+                transitioningIn = false;
+            }
+        };
+
+        fadeOutCallback = new TransitionCallback() {
+            @Override
+            public void callback() {
+                game.startEndScreen();
+            }
+        };
         // ((OrthographicCamera) stage.getCamera()).zoom = 10f;
     }
 
@@ -87,7 +121,7 @@ public class PlayScreen implements Screen {
         engine.addEntity(stars);
 
         TextureAtlas.AtlasRegion stationRegion = atlas.findRegion("station");
-        Station station = new Station(stationRegion, world, recipeManager);
+        Station station = new Station(this, stationRegion, world, recipeManager);
         engine.addEntity(station);
 
         TextureAtlas.AtlasRegion playerSprite = atlas.findRegion("ship");
@@ -109,7 +143,7 @@ public class PlayScreen implements Screen {
 
         // populate the stage with actors
         PlayerActor playerActor = new PlayerActor(atlas, player);
-        HarpoonActor harpoonActor = new HarpoonActor(world, harpoonRegion, harpoon);
+        HarpoonActor harpoonActor = new HarpoonActor(this, world, harpoonRegion, harpoon);
 
         playerActor.addActor(harpoonActor);
         stage.addActor(new StarsActor(stars, starsRegion));
@@ -151,6 +185,11 @@ public class PlayScreen implements Screen {
         table.padLeft(10);
         table.padTop(10);
 
+        instructions = new Label("Tap the orb below you to grab it", skin);
+        instructions.setAlignment(Align.center);
+        table.row();
+        table.add(instructions).colspan(2).expandX().align(Align.center);
+
         Label controls = new Label("A / D - rotate\nSpace - Thrust\nCtrl - Reverse\nG - Scan Location", skin);
         controls.setAlignment(Align.right);
         table.row();
@@ -163,10 +202,38 @@ public class PlayScreen implements Screen {
         uiStage.addActor(table);
     }
 
+    public void nextInstruction(InstructionState completedState) {
+        int compare = completedState.compareTo(instructionState);
+        if (compare >= 0) {
+            switch (completedState) {
+                case GRAB_OBJECT:
+                    instructionState = InstructionState.TAKE_TO_STATION;
+                    instructions.setText("Tow the object into the station above you.");
+                    break;
+                case TAKE_TO_STATION:
+                    instructionState = InstructionState.COLLECT_OTHERS;
+                    instructions.setText("Collect the other objects labeled on the top right.");
+                    collectOthersInstructionTimeout = 3f;
+                    break;
+                case COLLECT_OTHERS:
+                    instructions.setVisible(false);
+                    instructionState = InstructionState.DONE;
+                    break;
+            }
+        }
+    }
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        if (collectOthersInstructionTimeout > 0 && instructionState == InstructionState.COLLECT_OTHERS) {
+            collectOthersInstructionTimeout -= delta;
+            if (collectOthersInstructionTimeout <= 0) {
+                nextInstruction(InstructionState.COLLECT_OTHERS);
+            }
+        }
 
         float dt = Gdx.graphics.getDeltaTime();
         engine.update(dt);
@@ -186,7 +253,18 @@ public class PlayScreen implements Screen {
         uiStage.draw();
 
         cameraCpy.set(stage.getCamera().combined);
-        debugRenderer.render(world, cameraCpy.scl(Game.BOX_TO_WORLD));
+        // debugRenderer.render(world, cameraCpy.scl(Game.BOX_TO_WORLD));
+
+        if (transitioningIn ||  transitioningOut) {
+            Camera camera = stage.getCamera();
+            if (transitioningIn) {
+                fadeTimer -= delta;
+                game.drawBlackTransparentSquare(camera, shapeRenderer, fadeTimer / Game.FADE_TIMEOUT, fadeInCallback);
+            } else {
+                fadeTimer += delta;
+                game.drawBlackTransparentSquare(camera, shapeRenderer, fadeTimer / Game.FADE_TIMEOUT, fadeOutCallback);
+            }
+        }
 
         world.step(1/60f, 6, 2);
 
@@ -198,8 +276,9 @@ public class PlayScreen implements Screen {
 
         if (player.isDead()) {
             game.setScreen(this);
-        } else if (recipeManager.availableRecipesFinished()) {
-            game.startEndScreen();
+        } else if (recipeManager.availableRecipesFinished() && !transitioningOut) {
+            transitioningOut = true;
+            fadeTimer = 0;
         }
     }
 
@@ -234,5 +313,6 @@ public class PlayScreen implements Screen {
             t.dispose();
         }
         atlas.dispose();
+        music.dispose();
     }
 }
