@@ -313,6 +313,7 @@ public class PlayScreen implements Screen {
             t.dispose();
         }
         atlas.dispose();
+        music.stop();
         music.dispose();
     }
 }

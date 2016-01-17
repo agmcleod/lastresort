@@ -1,0 +1,14 @@
+{
+  "platform": "mac",
+  "jdk": "/Users/aaronmcleod/Documents/programming/java/jdkbuilds/openjdk-1.7.0-u80-unofficial-macosx-x86_64-image.zip",
+  "executable": "LastResort",
+  "classpath": [
+    "/Users/aaronmcleod/Documents/programming/java/lastresort/desktop/build/libs/desktop-1.0.jar"
+  ],
+  "mainclass": "com.agmcleod.lastresort.desktop.DesktopLauncher",
+  "vmargs": [
+    "-Xmx1G"
+  ],
+  "minimizejre": "soft",
+  "outdir": "out-mac"
+}

@@ -58,7 +58,7 @@ public class RecipeManager {
     public void makeNewRecipe() {
         int len = Math.min(3, availableRecipes.size);
         if (firstRecipe) {
-            len = 2;
+            len = Math.min(2, availableRecipes.size);
             recipes.add(RecipeType.ORB);
         }
 
