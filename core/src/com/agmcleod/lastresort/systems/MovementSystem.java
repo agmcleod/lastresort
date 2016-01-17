@@ -49,9 +49,9 @@ public class MovementSystem extends EntitySystem {
 
                 if (player.isThrustingForward() || player.isThrustingBackward()) {
                     if (player.isThrustingBackward()) {
-                        forceVector.set(0, -0.5f);
+                        forceVector.set(0, -0.3f);
                     } else if (player.isThrustingForward()) {
-                        forceVector.set(0, 0.8f);
+                        forceVector.set(0, 0.5f);
                     }
                     forceVector.rotate(body.getAngle() * MathUtils.radiansToDegrees);
                     body.applyForceToCenter(forceVector, true);

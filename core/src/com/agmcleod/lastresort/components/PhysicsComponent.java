@@ -17,12 +17,12 @@ public class PhysicsComponent implements Component {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(transformComponent.width / 2 * Game.WORLD_TO_BOX, transformComponent.height / 2 * Game.WORLD_TO_BOX);
 
-        setupBody(world, entity, shape, bodyType, transformComponent, Game.OBJECT_MASK, Game.STATION_MASK | Game.PLAYER_MASK);
+        setupBody(world, entity, shape, bodyType, transformComponent, Game.OBJECT_MASK, Game.OBJECT_MASK | Game.STATION_MASK | Game.PLAYER_MASK);
     }
 
     public PhysicsComponent(World world, GameEntity entity, BodyDef.BodyType bodyType, Shape shape) {
         TransformComponent transformComponent = ComponentMappers.transform.get(entity);
-        setupBody(world, entity, shape, bodyType, transformComponent, Game.OBJECT_MASK, Game.STATION_MASK | Game.PLAYER_MASK);
+        setupBody(world, entity, shape, bodyType, transformComponent, Game.OBJECT_MASK, Game.OBJECT_MASK | Game.STATION_MASK | Game.PLAYER_MASK);
     }
 
     public PhysicsComponent(World world, GameEntity entity, BodyDef.BodyType bodyType, int categoryBits, int maskBits) {

@@ -17,10 +17,12 @@ public class RecipeManager {
     private Array<RecipeType> recipes;
     private Array<RecipeType> availableRecipes;
     private RecipeGroup recipeGroup;
+    private boolean firstRecipe;
 
     public RecipeManager(TextureAtlas atlas) {
         recipes = new Array<RecipeType>();
         availableRecipes = new Array<RecipeType>();
+        firstRecipe = true;
         this.atlas = atlas;
     }
 
@@ -55,6 +57,12 @@ public class RecipeManager {
 
     public void makeNewRecipe() {
         int len = Math.min(3, availableRecipes.size);
+        if (firstRecipe) {
+            len = 2;
+            recipes.add(RecipeType.ORB);
+        }
+
+        firstRecipe = false;
         for (int i = 0; i < len; i++) {
             recipes.add(availableRecipes.get(i));
         }
