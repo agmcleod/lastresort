@@ -92,10 +92,7 @@ public class HarpoonSystem extends EntitySystem {
                     final float halfWidth = 2.5f * Game.WORLD_TO_BOX;
                     final float halfHeight = length / 2 * Game.WORLD_TO_BOX;
 
-                    float[] vertices = new float[]{
-                            -halfWidth, -halfHeight, halfWidth, -halfHeight,
-                            -halfWidth, halfHeight, halfWidth, halfHeight,
-                    };
+                    float[] vertices = rectangleFromDimensions(halfWidth, halfHeight);
 
                     shape.set(vertices);
 
@@ -106,37 +103,17 @@ public class HarpoonSystem extends EntitySystem {
                             ((targetPosition.y - playerPosition.y) / 2 + playerPosition.y) * Game.WORLD_TO_BOX);
                     Body ropeBody = world.createBody(def);
 
-                    FixtureDef fixtureDef = new FixtureDef();
-                    fixtureDef.shape = shape;
-                    fixtureDef.density = 0.5f;
-                    fixtureDef.friction = 0f;
-                    fixtureDef.restitution = 0f;
-                    fixtureDef.filter.categoryBits = Game.PLAYER_MASK;
-                    fixtureDef.filter.maskBits = 0;
-                    fixtureDef.restitution = 0;
-                    ropeBody.createFixture(fixtureDef);
+                    ropeBody.createFixture(buildRopeFixtureDef(shape));
                     player.setRopeBody(ropeBody);
 
-                    RevoluteJointDef jointDef = new RevoluteJointDef();
-                    jointDef.bodyA = player.getBody();
-                    jointDef.bodyB = ropeBody;
-                    jointDef.type = JointDef.JointType.RevoluteJoint;
+                    RevoluteJointDef jointDef = buildJointDef(player.getBody(), ropeBody);
                     jointDef.localAnchorA.set(0, -0.1f);
                     jointDef.localAnchorB.set(0, halfHeight);
-                    jointDef.enableLimit = true;
-                    jointDef.lowerAngle = 0;
-                    jointDef.upperAngle = 0;
 
                     world.createJoint(jointDef);
 
-                    jointDef = new RevoluteJointDef();
-                    jointDef.bodyA = ropeBody;
-                    jointDef.bodyB = targetBody;
-                    jointDef.type = JointDef.JointType.RevoluteJoint;
+                    jointDef = buildJointDef(ropeBody, targetBody);
                     jointDef.localAnchorA.set(0, -halfHeight);
-                    jointDef.enableLimit = true;
-                    jointDef.lowerAngle = 0;
-                    jointDef.upperAngle = 0;
 
                     world.createJoint(jointDef);
                     shape.dispose();
@@ -144,5 +121,37 @@ public class HarpoonSystem extends EntitySystem {
 
             }
         }
+    }
+
+    private RevoluteJointDef buildJointDef(Body bodyA, Body bodyB) {
+        RevoluteJointDef jointDef = new RevoluteJointDef();
+        jointDef.bodyA = bodyA;
+        jointDef.bodyB = bodyB;
+        jointDef.type = JointDef.JointType.RevoluteJoint;
+        jointDef.enableLimit = true;
+        jointDef.lowerAngle = 0;
+        jointDef.upperAngle = 0;
+
+        return jointDef;
+    }
+
+    private FixtureDef buildRopeFixtureDef(PolygonShape shape) {
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 0.5f;
+        fixtureDef.friction = 0f;
+        fixtureDef.restitution = 0f;
+        fixtureDef.filter.categoryBits = Game.PLAYER_MASK;
+        fixtureDef.filter.maskBits = 0;
+        fixtureDef.restitution = 0;
+
+        return fixtureDef;
+    }
+
+    private float[] rectangleFromDimensions(float halfWidth, float halfHeight) {
+        return new float[]{
+                -halfWidth, -halfHeight, halfWidth, -halfHeight,
+                -halfWidth, halfHeight, halfWidth, halfHeight,
+        };
     }
 }
