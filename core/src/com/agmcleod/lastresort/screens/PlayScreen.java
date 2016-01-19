@@ -134,7 +134,7 @@ public class PlayScreen implements Screen {
         engine.addEntity(scanUi);
 
         engine.addSystem(new MovementSystem());
-        engine.addSystem(new HarpoonSystem(world));
+        engine.addSystem(new HarpoonSystem(this, world));
         engine.addSystem(new StarsParallaxSystem(stage.getCamera()));
         engine.addSystem(new RecipeCollectionSystem(engine, player, recipeManager, world, bodyCleanup));
         engine.addSystem(new ScanSystem(stage.getCamera()));
@@ -143,7 +143,7 @@ public class PlayScreen implements Screen {
 
         // populate the stage with actors
         PlayerActor playerActor = new PlayerActor(atlas, player);
-        HarpoonActor harpoonActor = new HarpoonActor(this, world, harpoonRegion, harpoon);
+        HarpoonActor harpoonActor = new HarpoonActor(harpoonRegion, harpoon);
 
         playerActor.addActor(harpoonActor);
         stage.addActor(new StarsActor(stars, starsRegion));

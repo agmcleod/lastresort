@@ -27,16 +27,12 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
  */
 public class HarpoonActor extends Actor {
     private Harpoon harpoon;
-    private PlayScreen playScreen;
     private TextureRegion textureRegion;
-    private World world;
-    public HarpoonActor(PlayScreen playScreen, World world, TextureRegion textureRegion, Harpoon harpoon) {
+    public HarpoonActor(TextureRegion textureRegion, Harpoon harpoon) {
         this.harpoon = harpoon;
         this.textureRegion = textureRegion;
         TransformComponent transformComponent = harpoon.getTransform();
         this.setBounds(transformComponent.position.x, transformComponent.position.y, transformComponent.width, transformComponent.height);
-        this.world = world;
-        this.playScreen = playScreen;
     }
 
     @Override
@@ -70,72 +66,7 @@ public class HarpoonActor extends Actor {
         addAction((sequence(Actions.rotateTo(getAbsoluteAngle(harpoonRotateToTargetComponent), 0.5f), new RunnableAction() {
             @Override
             public void run() {
-                playScreen.nextInstruction(InstructionState.GRAB_OBJECT);
-
-                HarpoonComponent harpoonComponent = player.getHarpoonComponent();
-                harpoonComponent.firing = false;
-                PhysicsComponent physicsComponent = harpoonComponent.targetEntity.getComponent(PhysicsComponent.class);
-                Body targetBody = physicsComponent.body;
-                targetBody.setType(BodyDef.BodyType.DynamicBody);
-                PolygonShape shape = new PolygonShape();
-                Vector2 playerPosition = player.getTransform().position;
-                Vector2 targetPosition = harpoonComponent.targetEntity.getTransform().position;
-                float length = targetPosition.dst(playerPosition);
-                harpoonComponent.ropeWidth = 5;
-                harpoonComponent.ropeHeight = length;
-
-                final float halfWidth = 2.5f * Game.WORLD_TO_BOX;
-                final float halfHeight = length / 2 * Game.WORLD_TO_BOX;
-
-                float[] vertices = new float[]{
-                        -halfWidth, -halfHeight, halfWidth, -halfHeight,
-                        -halfWidth, halfHeight, halfWidth, halfHeight,
-                };
-
-                // shape.setAsBox((harpoonComponent.ropeWidth * Game.WORLD_TO_BOX) / 2, (harpoonComponent.ropeHeight * Game.WORLD_TO_BOX) / 2);
-                shape.set(vertices);
-
-                BodyDef def = new BodyDef();
-
-                def.type = BodyDef.BodyType.DynamicBody;
-                def.position.set(((targetPosition.x - playerPosition.x) / 2 + playerPosition.x) * Game.WORLD_TO_BOX,
-                        ((targetPosition.y - playerPosition.y) / 2 + playerPosition.y) * Game.WORLD_TO_BOX);
-                Body ropeBody = world.createBody(def);
-
-                FixtureDef fixtureDef = new FixtureDef();
-                fixtureDef.shape = shape;
-                fixtureDef.density = 0.5f;
-                fixtureDef.friction = 0f;
-                fixtureDef.restitution = 0f;
-                fixtureDef.filter.categoryBits = Game.PLAYER_MASK;
-                fixtureDef.filter.maskBits = 0;
-                fixtureDef.restitution = 0;
-                ropeBody.createFixture(fixtureDef);
-                player.setRopeBody(ropeBody);
-
-                RevoluteJointDef jointDef = new RevoluteJointDef();
-                jointDef.bodyA = player.getBody();
-                jointDef.bodyB = ropeBody;
-                jointDef.type = JointDef.JointType.RevoluteJoint;
-                jointDef.localAnchorA.set(0, -0.1f);
-                jointDef.localAnchorB.set(0, halfHeight);
-                jointDef.enableLimit = true;
-                jointDef.lowerAngle = 0;
-                jointDef.upperAngle = 0;
-
-                world.createJoint(jointDef);
-
-                jointDef = new RevoluteJointDef();
-                jointDef.bodyA = ropeBody;
-                jointDef.bodyB = targetBody;
-                jointDef.type = JointDef.JointType.RevoluteJoint;
-                jointDef.localAnchorA.set(0, -halfHeight);
-                jointDef.enableLimit = true;
-                jointDef.lowerAngle = 0;
-                jointDef.upperAngle = 0;
-
-                world.createJoint(jointDef);
-                shape.dispose();
+                player.getHarpoonComponent().queueFireTrigger = true;
             }
         })
         ));

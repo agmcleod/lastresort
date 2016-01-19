@@ -12,6 +12,7 @@ import com.badlogic.gdx.physics.box2d.Joint;
 public class HarpoonComponent implements Component {
     public boolean firing = false;
     public boolean fireTriggered = false;
+    public boolean queueFireTrigger;
     public GameEntity targetEntity;
     public Body ropeBody = null;
     public float ropeWidth = 0;
