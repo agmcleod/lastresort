@@ -45,7 +45,7 @@ public class PlayerActor extends Group {
         this.setOrigin(getWidth() / 2, getHeight() / 2);
 
         this.addListener(new InputListener() {
-           @Override
+            @Override
             public boolean keyDown(InputEvent event, int keycode) {
                return player.setInputKeyState(keycode, true);
             }

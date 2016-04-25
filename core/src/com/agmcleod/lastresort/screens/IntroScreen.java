@@ -3,6 +3,7 @@ package com.agmcleod.lastresort.screens;
 import com.agmcleod.lastresort.Game;
 import com.agmcleod.lastresort.TransitionCallback;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.files.FileHandle;
@@ -17,7 +18,7 @@ import com.badlogic.gdx.utils.Align;
 /**
  * Created by aaronmcleod on 2016-01-17.
  */
-public class IntroScreen implements Screen {
+public class IntroScreen implements Screen, InputProcessor {
     private TextureAtlas atlas;
     private TextureAtlas.AtlasRegion background;
     private SpriteBatch batch;
@@ -86,6 +87,7 @@ public class IntroScreen implements Screen {
                 game.startPlayScreen();
             }
         };
+        Gdx.input.setInputProcessor(this);
     }
 
     private void nextClip() {
@@ -172,5 +174,50 @@ public class IntroScreen implements Screen {
         atlas.dispose();
         font.dispose();
         shapeRenderer.dispose();
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        if (currentClip != null) {
+            currentClip.stop();
+            currentClip.dispose();
+        }
+        transitioningOut = true;
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
     }
 }
